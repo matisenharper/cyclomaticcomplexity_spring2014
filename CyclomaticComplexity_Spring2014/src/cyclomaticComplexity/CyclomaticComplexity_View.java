@@ -1,5 +1,6 @@
 package cyclomaticComplexity;
 
-public interface CyclomaticComplexity_View {
-
+public interface CyclomaticComplexity_View 
+{
+	
 }
