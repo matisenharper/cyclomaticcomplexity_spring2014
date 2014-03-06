@@ -1,4 +1,4 @@
-package cyclomaticComplexity;
+package InputOutput;
 
 public class PDFGenerator {
 
