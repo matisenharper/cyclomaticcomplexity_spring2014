@@ -1,5 +1,18 @@
 package Engine;
 
-public class MethodEngine {
+import java.io.File;
+
+public class MethodEngine implements MethodEngineInterface{
+	
+	MethodManager methods;
+	
+	public MethodEngine(){
+		methods = new MethodManager();
+	}
+
+	@Override
+	public MethodManager getMethodManager(File program) {
+		return methods;
+	}
 
 }
