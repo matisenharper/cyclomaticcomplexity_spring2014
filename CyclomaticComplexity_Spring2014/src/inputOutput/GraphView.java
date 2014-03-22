@@ -1,4 +1,4 @@
-package InputOutput;
+package inputOutput;
 
 public class GraphView {
 

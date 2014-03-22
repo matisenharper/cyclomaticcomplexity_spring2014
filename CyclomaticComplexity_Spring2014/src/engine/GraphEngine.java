@@ -1,7 +1,7 @@
-package Engine;
+package engine;
 
 import cyclomaticComplexity.GraphModel;
 
-public interface GraphEngineInterface {
+public interface GraphEngine {
 	public GraphModel getGraphModel(String method);
 }

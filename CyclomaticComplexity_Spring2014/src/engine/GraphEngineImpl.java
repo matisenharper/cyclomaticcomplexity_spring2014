@@ -1,10 +1,10 @@
-package Engine;
+package engine;
 
 import cyclomaticComplexity.GraphModel;
 
-public class GraphEngine implements GraphEngineInterface{
+public class GraphEngineImpl implements GraphEngine{
 
-	public GraphEngine(){
+	public GraphEngineImpl(){
 	}
 	
 	@Override
