@@ -1,5 +1,5 @@
 package cyclomaticComplexity;
 
-public class GraphModel {
-
+public interface GraphModel {
+	
 }

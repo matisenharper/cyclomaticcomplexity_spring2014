@@ -1,22 +1,34 @@
 package regularExpresionTests;
 
 import java.io.*;
+import java.lang.reflect.Method;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
+
+import engine.GraphEngine;
+import engine.GraphEngineImpl;
 
 public class RegexTest {
 
     public static void main(String[] args){
         
     	String s = RegexTest.getText("C:/Java/Prueba.java");
+    	File file = null;
+    	Method method = null;
     	
-    	s = s.replaceAll("//.*?\\\n", "\n");
-    	s = s.replaceAll("/\\*(.*?\\s*?)*?\\*/", "\n");
+    	GraphEngine g = new GraphEngineImpl();
     	
-    	System.out.print(s);
+    	g.getGraphModel(file,method);
+    	
+    	//s = s.replaceAll("//.*?\\\n", "\n");
+    	//s = s.replaceAll("/\\*(.*?\\s*?)*?\\*/", "\n");
+    	
+    	
+    	
+    	/*System.out.print(s);
     	
     	Pattern pattern = 
-        Pattern.compile("if\\s*\\(.*?\\)\\s*\\{");
+        Pattern.compile("if\\s*\\(");
     	
     	Matcher matcher = pattern.matcher(s);
 
@@ -37,7 +49,7 @@ public class RegexTest {
         }
         if(!found){
             System.out.println("No match found");
-        }
+        }*/
     }
     
     public static String getText(String file){
@@ -49,7 +61,6 @@ public class RegexTest {
             BufferedReader br=new BufferedReader(ipsr);
             String line;
             while ((line=br.readLine())!=null){
-                System.out.println(line);
                 string+=line+"\n";
             }
             br.close(); 
