@@ -4,8 +4,9 @@ import java.awt.LayoutManager;
 
 import javax.swing.JComponent;
 import javax.swing.JFrame;
+import javax.swing.JPanel;
 import javax.swing.JRadioButton;
-
+import javax.swing.SwingUtilities;
 
 import java.awt.*;
 
@@ -20,39 +21,96 @@ import java.lang.reflect.Method;
 import java.util.Random;
 
 
-public class GraphView<MyPanel>  extends JComponent
+
+public class GraphView extends JFrame {
+
+	public GraphView() 
+	{
+
+		setTitle("Student Name");
+		setSize(300, 200);
+		setLocationRelativeTo(null);
+		setDefaultCloseOperation(EXIT_ON_CLOSE);        
+	}
+	
+	private JRadioButton createButton(String buttonName)
+	{
+		JPanel buttonPanel= new JPanel();
+		JRadioButton button = new JRadioButton(buttonName, false);
+		
+		
+
+		return button;
+	}
+
+
+	public static void main(String[] args) {
+
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				GraphView graph = new GraphView();
+				graph.setVisible(true);
+			}
+		});
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*public class GraphView  extends JPanel
 {
-        public static final int FRAMEHEIGHT=900;
-        public static final int FRAMEWIDTH=1000;
-        int line [] = new int[500];
+	public static final int FRAMEHEIGHT=400;
+	public static final int FRAMEWIDTH=400;
+	int line [] = new int[500];
 
-        MyPanel graphPanel;
-        GraphView buttonPanel;
 
-        Thread runner;
+	Thread runner;
 
-        //this will see how meny methods I have and keep adding radio button until there is no more methods
-        
-        
-        //call the method that will create the number of buttons
-        JRadioButton RadioButton()
+
+	public static void main (String agrs[])
+	{
+		javax.swing.SwingUtilities.invokeLater(new Runnable() 
+		{
+			public void run() 
+			{
+				GraphView graph = new GraphView();
+				graph.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+				graph.setSize(GraphView.FRAMEWIDTH, GraphView.FRAMEHEIGHT);
+				//Display the window.
+				graph.setVisible(true);
+			}
+
+		});
+	}
+}
+	//this will see how many methods I have and keep adding radio button until there is no more methods
+
+
+	//call the method that will create the number of buttons
+	/*JRadioButton RadioButton()
         {
         	//it should return radio buttons with the name of methods
 			return null;
-		}
+		}*/
 
-/*private JRadioButton RadioButton(Methods methodName)
-{
-        //Method m = new Method();
-        JRadioButton button = new JRadioButton();
-        while (number of methods in class are not over )
-        {
-                button = new JRadioButton (methodName);
-        }
-        return button;
-}*/
 
-public void refresh()
+//the method names string will come from another method
+
+/*public void refresh()
 {
         Random ranNum = new Random ();
         for(int i =0 ; i <500; i++)
