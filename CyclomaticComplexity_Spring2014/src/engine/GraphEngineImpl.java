@@ -8,13 +8,14 @@ import java.util.regex.Matcher;
 
 import regularExpresionTests.GraphModelTestMatcher;
 import cyclomaticComplexity.GraphModel;
+import cyclomaticComplexity.GraphModelImpl;
 
 public class GraphEngineImpl implements GraphEngine{
 
-	GraphModelTestMatcher graph;
+	GraphModel graph;
 	
 	public GraphEngineImpl(){
-		graph = new GraphModelTestMatcher();
+		graph = new GraphModelImpl();
 	}
 	
 	@Override

@@ -12,7 +12,7 @@ public class RegexTest {
 
     public static void main(String[] args){
         
-    	File file = new File("C:/Java/Test.java");
+    	File file = new File("./src/regularExpresionTests/Test.java");
     	Method method = null;
     	
     	GraphEngine g = new GraphEngineImpl();
