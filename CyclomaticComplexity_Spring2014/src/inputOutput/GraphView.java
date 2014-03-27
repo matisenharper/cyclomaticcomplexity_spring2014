@@ -10,16 +10,21 @@ import javax.swing.SwingUtilities;
 
 import java.awt.*;
 
+import javax.swing.*;
 import javax.swing.plaf.*;
 import javax.accessibility.*;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.Serializable;//  JavaDoc;
 import java.io.ObjectOutputStream;//  JavaDoc;
 import java.io.ObjectInputStream;//  JavaDoc;
 import java.io.IOException;//  JavaDoc;
 import java.lang.reflect.Method;
 import java.util.Random;
-
+import java.util.Scanner;
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
 
 
 public class GraphView extends JFrame {
@@ -28,33 +33,140 @@ public class GraphView extends JFrame {
 	{
 
 		setTitle("Student Name");
-		setSize(300, 200);
+		setSize(950, 800);
 		setLocationRelativeTo(null);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);        
 	}
-	
-	private JRadioButton createButton(String buttonName)
-	{
-		JPanel buttonPanel= new JPanel();
-		JRadioButton button = new JRadioButton(buttonName, false);
-		
-		
 
-		return button;
+	/*To Show jpeg in GUI LOOK AT:
+	 * http://nf.nci.org.au/facilities/software/Matlab/techdoc/creating_guis/ch_ove16.html
+	 * 
+	 * http://www.mathworks.com/matlabcentral/answers/24009-display-jpeg-file-in-gui
+	 * 
+	 * OR DO:*/
+	public static class ImageShow extends JPanel
+	{
+		private ImageIcon image;
+		private JLabel label;
+
+		ImageShow()
+		{
+			setLayout(new FlowLayout());
+			image = new ImageIcon(getClass().getResource("demo.jpg"));
+			label = new JLabel(image);
+			add(label);
+		}
+
 	}
 
 
-	public static void main(String[] args) {
+	private static void createButton(String buttonName, GraphView graph)
+	{
+		JPanel buttonPanel= new JPanel();
+		//ButtonGroup methodGroup = new ButtonGroup();
+		JRadioButton button = new JRadioButton(buttonName, false);
+		
+		
+		buttonPanel.add(button);
+		graph.add(buttonPanel);
+		
+
+	}
+
+
+	public static void MethodHeaderLooker(File file, GraphView graph)
+	{
+		//method header example to look for
+		final String REGEX = "/public [a-zA-Z1-9]([a-zA-Z1-9])private [a-zA-Z1-9]([a-zA-Z1-9])/";
+		
+		//File filejava = new File(file);
+		System.out.println("running methodheaderlooker");
+		
+		try {
+			System.out.println("running methodheaderlooker2");
+			Scanner scanner = new Scanner("Tic.txt");
+			
+			//now read the file line by line...
+			int lineNum = 0;
+			while (scanner.hasNextLine()) 
+			{
+				System.out.println("running methodheaderlooker3");
+				String line = scanner.nextLine();
+				lineNum++;
+				System.out.println(line);
+				
+				//determine whether line contains a method
+				//if method is contained, create button with method name
+				if(line.contains("public")|| line.contains("private"))
+				{
+					//create button named after method that was found in 'line'
+					createButton(line,graph);
+					
+				}
+			
+			}
+			scanner.close();
+		} catch(Exception e) { 
+			System.out.println("catching");
+			//handle this
+		}
+	}
+	/*SOME WEBSITES TO HELP:
+	 * http://answers.yahoo.com/question/index?qid=20101125121937AAbbXeq
+	 * 
+	 * public static class MethodHeaderLooker {
+
+		//method header example to look for
+		private static final String REGEX = /public ( )private ( )/;
+		//the .java file
+		private static final String INPUT =
+				"fooooooooooooooooo";
+		private static Pattern pattern;
+		private static Matcher matcher;*/
+
+
+	public static void main(String args []) 
+	{
 
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
+				File file=new File("Tic.txt");
 				GraphView graph = new GraphView();
 				graph.setVisible(true);
+				showImage(graph);
+				createButton("Test Button",graph);
+				MethodHeaderLooker(file, graph);
 			}
 		});
+
+
+		/*http://stackoverflow.com/questions/13667041/reading-a-txt-file-in-a-java-gui
+		 * 
+		 * pattern = Pattern.compile(REGEX);
+			matcher = pattern.matcher(INPUT);
+
+			System.out.println("Current REGEX is: "
+					+ REGEX);
+			System.out.println("Current INPUT is: "
+					+ INPUT);
+
+			System.out.println("lookingAt(): "
+					+ matcher.lookingAt());
+			System.out.println("matches(): "
+					+ matcher.matches());*/
+	}
+
+	private static void showImage(GraphView graph)
+	{
+		ImageShow gui = new ImageShow();
+		//gui.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		//gui.setVisible(true);
+		graph.add(gui);
+		graph.pack();
 	}
 }
+
 
 
 
