@@ -1,30 +1,15 @@
 package inputOutput;
 
-import java.awt.LayoutManager;
+import java.awt.FlowLayout;
+import java.io.File;
+import java.util.Scanner;
 
-import javax.swing.JComponent;
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.SwingUtilities;
-
-import java.awt.*;
-
-import javax.swing.*;
-import javax.swing.plaf.*;
-import javax.accessibility.*;
-
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.Serializable;//  JavaDoc;
-import java.io.ObjectOutputStream;//  JavaDoc;
-import java.io.ObjectInputStream;//  JavaDoc;
-import java.io.IOException;//  JavaDoc;
-import java.lang.reflect.Method;
-import java.util.Random;
-import java.util.Scanner;
-import java.util.regex.Pattern;
-import java.util.regex.Matcher;
 
 
 public class GraphView extends JFrame {
@@ -44,7 +29,7 @@ public class GraphView extends JFrame {
 	 * http://www.mathworks.com/matlabcentral/answers/24009-display-jpeg-file-in-gui
 	 * 
 	 * OR DO:*/
-	public static class ImageShow extends JPanel
+	private static class ImageShow extends JPanel
 	{
 		private ImageIcon image;
 		private JLabel label;
@@ -74,7 +59,7 @@ public class GraphView extends JFrame {
 	}
 
 
-	public static void MethodHeaderLooker(File file, GraphView graph)
+	private static void MethodHeaderLooker(File file, GraphView graph)
 	{
 		//method header example to look for
 		final String REGEX = "/public [a-zA-Z1-9]([a-zA-Z1-9])private [a-zA-Z1-9]([a-zA-Z1-9])/";
@@ -100,10 +85,8 @@ public class GraphView extends JFrame {
 				if(line.contains("public")|| line.contains("private"))
 				{
 					//create button named after method that was found in 'line'
-					createButton(line,graph);
-					
+					createButton(line,graph);	
 				}
-			
 			}
 			scanner.close();
 		} catch(Exception e) { 
