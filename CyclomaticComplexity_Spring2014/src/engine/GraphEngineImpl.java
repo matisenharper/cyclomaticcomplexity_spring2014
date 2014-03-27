@@ -84,7 +84,7 @@ public class GraphEngineImpl implements GraphEngine{
 					lastnode = generateGraphModel(code.substring(startcurly, end-1),tempnode);
 					break;
 				case 1:
-					startcurly = ExpresionMatcher.getNextCurly(code,ExpresionMatcher.getEndofParenthesis(code, end));
+					startcurly = end;
 					end = ExpresionMatcher.getEndofCurly(code, startcurly);
 					tempnode = generateGraphModel(code.substring(startcurly, end-1),tempnode);
 					break;

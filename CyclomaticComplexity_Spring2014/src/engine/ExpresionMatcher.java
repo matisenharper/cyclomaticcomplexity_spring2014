@@ -3,11 +3,11 @@ package engine;
 import java.util.regex.Pattern;
 
 public class ExpresionMatcher{
-	static Pattern if_exp = Pattern.compile("if\\s*\\(");
-	static Pattern while_exp = Pattern.compile("while\\s*\\(");
-	static Pattern for_exp = Pattern.compile("for\\s*\\(");
+	final static Pattern if_exp = Pattern.compile("if\\s*\\(");
+	final static Pattern while_exp = Pattern.compile("while\\s*\\(");
+	final static Pattern for_exp = Pattern.compile("for\\s*\\(");
 	
-	static Pattern else_exp = Pattern.compile("\\s*else\\s*\\(");
+	final static Pattern else_exp = Pattern.compile("\\s*else\\s*\\{");
 	
 	
 	public static Pattern[] getPatternExpresions(){
