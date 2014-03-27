@@ -13,7 +13,7 @@ public class MethodEngineImpl  implements MethodEngine{
 
 	@Override
 	public String getCode(File program, Method method) {
-		String s = RegexTest.getText("C:/Java/Prueba.java");
+		String s = RegexTest.getText(program);
 		return s;
 	}
 

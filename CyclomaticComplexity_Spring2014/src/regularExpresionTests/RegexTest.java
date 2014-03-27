@@ -12,8 +12,7 @@ public class RegexTest {
 
     public static void main(String[] args){
         
-    	String s = RegexTest.getText("C:/Java/Prueba.java");
-    	File file = null;
+    	File file = new File("C:/Java/Test.java");
     	Method method = null;
     	
     	GraphEngine g = new GraphEngineImpl();
@@ -52,8 +51,8 @@ public class RegexTest {
         }*/
     }
     
-    public static String getText(String file){
-    	File f = new File(file);
+    public static String getText(File file){
+    	File f = file;
     	String string = "";
     	try{
             InputStream ips=new FileInputStream(f); 
