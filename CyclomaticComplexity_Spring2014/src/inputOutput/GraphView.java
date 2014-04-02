@@ -1,7 +1,9 @@
 package inputOutput;
 
+import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.Scanner;
 
 import javax.swing.ImageIcon;
@@ -34,9 +36,10 @@ public class GraphView extends JFrame {
 		private ImageIcon image;
 		private JLabel label;
 
+		//constructor
 		ImageShow()
 		{
-			setLayout(new FlowLayout());
+			setLayout(new BorderLayout());
 			image = new ImageIcon(getClass().getResource("demo.jpg"));
 			label = new JLabel(image);
 			add(label);
@@ -45,32 +48,32 @@ public class GraphView extends JFrame {
 	}
 
 
-	private static void createButton(String buttonName, GraphView graph)
+	private static void createButton(String buttonName, JPanel buttons)
 	{
 		JPanel buttonPanel= new JPanel();
 		//ButtonGroup methodGroup = new ButtonGroup();
 		JRadioButton button = new JRadioButton(buttonName, false);
-		
-		
+
+
 		buttonPanel.add(button);
-		graph.add(buttonPanel);
-		
+		buttons.add(buttonPanel);
+
 
 	}
 
 
-	private static void MethodHeaderLooker(File file, GraphView graph)
+	private static void MethodHeaderLooker(File file, JPanel graph)
 	{
 		//method header example to look for
 		final String REGEX = "/public [a-zA-Z1-9]([a-zA-Z1-9])private [a-zA-Z1-9]([a-zA-Z1-9])/";
-		
+
 		//File filejava = new File(file);
 		System.out.println("running methodheaderlooker");
-		
+
 		try {
 			System.out.println("running methodheaderlooker2");
-			Scanner scanner = new Scanner("Tic.txt");
-			
+			Scanner scanner = new Scanner(file);
+
 			//now read the file line by line...
 			int lineNum = 0;
 			while (scanner.hasNextLine()) 
@@ -79,19 +82,23 @@ public class GraphView extends JFrame {
 				String line = scanner.nextLine();
 				lineNum++;
 				System.out.println(line);
-				
+
 				//determine whether line contains a method
 				//if method is contained, create button with method name
+
 				if(line.contains("public")|| line.contains("private"))
 				{
+					System.out.println("methodheaderlooker4");
 					//create button named after method that was found in 'line'
 					createButton(line,graph);	
 				}
 			}
 			scanner.close();
-		} catch(Exception e) { 
-			System.out.println("catching");
-			//handle this
+		} catch(FileNotFoundException e) { 
+			System.out.println("file.getAbsolutePath() = " + file.getAbsolutePath());
+			System.out.println("catching" + e);
+			System.out.println(e.getClass());
+			//handle this 
 		}
 	}
 	/*SOME WEBSITES TO HELP:
@@ -114,12 +121,25 @@ public class GraphView extends JFrame {
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
-				File file=new File("Tic.txt");
+
+				File file;
+				file=new File("Tic.txt");
+
 				GraphView graph = new GraphView();
+				JPanel imagePanel = new JPanel();
+				JPanel buttons= new JPanel();
+				graph.add(buttons,BorderLayout.WEST);
+				graph.add(imagePanel,BorderLayout.EAST);
+
+				//imagePanel.setVisible(true);
+				buttons.setVisible(true);
 				graph.setVisible(true);
-				showImage(graph);
-				createButton("Test Button",graph);
-				MethodHeaderLooker(file, graph);
+
+
+				showImage(imagePanel);
+
+				createButton("Test Button",buttons);
+				MethodHeaderLooker(file, buttons);
 			}
 		});
 
@@ -140,27 +160,15 @@ public class GraphView extends JFrame {
 					+ matcher.matches());*/
 	}
 
-	private static void showImage(GraphView graph)
+	private static void showImage(JPanel graph)
 	{
 		ImageShow gui = new ImageShow();
 		//gui.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		//gui.setVisible(true);
 		graph.add(gui);
-		graph.pack();
+
 	}
 }
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -249,6 +257,9 @@ class MyPanel extends GraphView
 public JPanel(LayoutManager layout) 
 {
         this(layout, true);
+
+
+
 }
 
 
