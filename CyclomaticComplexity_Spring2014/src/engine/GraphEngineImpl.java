@@ -1,12 +1,9 @@
 package engine;
 
-import java.io.File;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 
-import regularExpresionTests.GraphModelTestMatcher;
 import cyclomaticComplexity.GraphModel;
 import cyclomaticComplexity.GraphModelImpl;
 
@@ -19,10 +16,9 @@ public class GraphEngineImpl implements GraphEngine{
 	}
 	
 	@Override
-	public GraphModel getGraphModel(File program, Method method) {
+	public GraphModel getGraphModel(MethodCode method) {
 		
-		MethodEngine me = new MethodEngineImpl();
-		String code = me.getCode(program, method);
+		String code = method.getBody();
 		
 		generateGraphModel(code,graph.getNodeCount());
 		
