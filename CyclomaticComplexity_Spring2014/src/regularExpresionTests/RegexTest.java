@@ -2,11 +2,13 @@ package regularExpresionTests;
 
 import java.io.*;
 import java.lang.reflect.Method;
-import java.util.regex.Pattern;
-import java.util.regex.Matcher;
 
+import Milestone1_Runner.COSC3327_STUDENT_SMALL;
+import Milestone1_Runner.Student;
 import engine.GraphEngine;
 import engine.GraphEngineImpl;
+import engine.MethodCode;
+import engine.MethodCodeImpl;
 
 public class RegexTest {
 
@@ -16,8 +18,10 @@ public class RegexTest {
     	Method method = null;
     	
     	GraphEngine g = new GraphEngineImpl();
+    	Student author = COSC3327_STUDENT_SMALL.SMITH;
+    	MethodCode code = new MethodCodeImpl(author,file,method);
     	
-    	g.getGraphModel(file,method);
+    	g.getGraphModel(code);
     	
     	//s = s.replaceAll("//.*?\\\n", "\n");
     	//s = s.replaceAll("/\\*(.*?\\s*?)*?\\*/", "\n");
@@ -51,22 +55,5 @@ public class RegexTest {
         }*/
     }
     
-    public static String getText(File file){
-    	File f = file;
-    	String string = "";
-    	try{
-            InputStream ips=new FileInputStream(f); 
-            InputStreamReader ipsr=new InputStreamReader(ips);
-            BufferedReader br=new BufferedReader(ipsr);
-            String line;
-            while ((line=br.readLine())!=null){
-                string+=line+"\n";
-            }
-            br.close(); 
-        }       
-        catch (Exception e){
-            System.out.println(e.toString());
-        }
-    	return string;
-    }
+    
 }

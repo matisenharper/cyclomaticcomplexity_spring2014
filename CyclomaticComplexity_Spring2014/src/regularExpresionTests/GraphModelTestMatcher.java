@@ -2,8 +2,6 @@ package regularExpresionTests;
 
 import java.util.ArrayList;
 
-import cyclomaticComplexity.GraphModel;
-
 public class GraphModelTestMatcher{
 	
 	int nodecount;
