@@ -1,7 +1,9 @@
 package inputOutput;
 
 import java.awt.BorderLayout;
-import java.awt.FlowLayout;
+import java.awt.Color;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
@@ -11,7 +13,11 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
-import javax.swing.SwingUtilities;
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.URL;
 
 
 public class GraphView extends JFrame {
@@ -25,12 +31,6 @@ public class GraphView extends JFrame {
 		setDefaultCloseOperation(EXIT_ON_CLOSE);        
 	}
 
-	/*To Show jpeg in GUI LOOK AT:
-	 * http://nf.nci.org.au/facilities/software/Matlab/techdoc/creating_guis/ch_ove16.html
-	 * 
-	 * http://www.mathworks.com/matlabcentral/answers/24009-display-jpeg-file-in-gui
-	 * 
-	 * OR DO:*/
 	private static class ImageShow extends JPanel
 	{
 		private ImageIcon image;
@@ -58,27 +58,56 @@ public class GraphView extends JFrame {
 		buttonPanel.add(button);
 		buttons.add(buttonPanel);
 
-
+		button.addActionListener(new ActionListener ()
+		{
+			public void actionPerformed (ActionEvent  e )
+			{
+				System.out.println("button is still not working " + e);
+				//the teacher wants RuntimeException
+				//it will have to be in try catch
+			}
+		});
 	}
 
 
-	private static void MethodHeaderLooker(File file, JPanel graph)
+	private static void MethodHeaderLooker(File file, JPanel graph) throws IOException
 	{
 		//method header example to look for
-		final String REGEX = "/public [a-zA-Z1-9]([a-zA-Z1-9])private [a-zA-Z1-9]([a-zA-Z1-9])/";
+		//final String REGEX = "/public [a-zA-Z1-9]([a-zA-Z1-9])private [a-zA-Z1-9]([a-zA-Z1-9])/";
 
 		//File filejava = new File(file);
 		System.out.println("running methodheaderlooker");
 
-		try {
-			System.out.println("running methodheaderlooker2");
+
+		try 
+		{
+			FileInputStream input = new FileInputStream(file);
+			assert input != null : "input is null! : Check that the resources folder is on the classpath, the file name is correct, and the file is in the resources folder";
+			BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(input));
+			String str;
+			do
+			{
+				str = bufferedReader.readLine();
+				if(str != null) System.out.println(str);
+			}
+			while(str != null);
+		}
+
+		catch(FileNotFoundException e) { 
+			System.out.println("file.getAbsolutePath() = " + file.getAbsolutePath());
+			System.out.println("catching" + e);
+			System.out.println(e.getClass());
+			//handle this 
+		}
+		/*try {
+			//System.out.println("running methodheaderlooker2");
 			Scanner scanner = new Scanner(file);
 
 			//now read the file line by line...
 			int lineNum = 0;
 			while (scanner.hasNextLine()) 
 			{
-				System.out.println("running methodheaderlooker3");
+				//System.out.println("running methodheaderlooker3");
 				String line = scanner.nextLine();
 				lineNum++;
 				System.out.println(line);
@@ -88,7 +117,7 @@ public class GraphView extends JFrame {
 
 				if(line.contains("public")|| line.contains("private"))
 				{
-					System.out.println("methodheaderlooker4");
+					//System.out.println("methodheaderlooker4");
 					//create button named after method that was found in 'line'
 					createButton(line,graph);	
 				}
@@ -99,7 +128,7 @@ public class GraphView extends JFrame {
 			System.out.println("catching" + e);
 			System.out.println(e.getClass());
 			//handle this 
-		}
+		}*/
 	}
 	/*SOME WEBSITES TO HELP:
 	 * http://answers.yahoo.com/question/index?qid=20101125121937AAbbXeq
@@ -118,28 +147,43 @@ public class GraphView extends JFrame {
 	public static void main(String args []) 
 	{
 
-		SwingUtilities.invokeLater(new Runnable() {
-			@Override
+		javax.swing.SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 
-				File file;
-				file=new File("Tic.txt");
+
+				ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+				URL url = classLoader.getResource("inputOutput/Tic.txt");
+				assert url != null : "url is null!";
+				File file = new File(url.getPath());
+				System.out.println(file.getAbsolutePath());
 
 				GraphView graph = new GraphView();
 				JPanel imagePanel = new JPanel();
 				JPanel buttons= new JPanel();
+				JPanel calPanel = new JPanel();
 				graph.add(buttons,BorderLayout.WEST);
 				graph.add(imagePanel,BorderLayout.EAST);
+				graph.add(calPanel,BorderLayout.SOUTH);
 
+				imagePanel.setBackground( Color.cyan);
+				calPanel.setBackground( Color.blue);
+				buttons.setBackground(Color.GREEN);
+				
 				//imagePanel.setVisible(true);
 				buttons.setVisible(true);
 				graph.setVisible(true);
+				calPanel.setVisible(true);
 
 
 				showImage(imagePanel);
 
 				createButton("Test Button",buttons);
-				MethodHeaderLooker(file, buttons);
+				try {
+					MethodHeaderLooker(file, buttons);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					System.out.println("catch in main" + e);
+				};
 			}
 		});
 
