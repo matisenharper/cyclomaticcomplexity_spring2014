@@ -16,9 +16,9 @@ public class GraphEngineImpl implements GraphEngine{
 	}
 	
 	@Override
-	public GraphModel getGraphModel(MethodCode method) {
+	public GraphModel getGraphModel(MethodData method) {
 		
-		String code = method.getBody();
+		String code = method.getMethod().getBody();
 		
 		generateGraphModel(code,graph.getNodeCount());
 		

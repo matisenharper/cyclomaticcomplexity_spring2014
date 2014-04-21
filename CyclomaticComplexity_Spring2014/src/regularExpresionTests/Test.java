@@ -12,9 +12,9 @@ public class Test {
 		*/
 		if   (i == 2) {
 			System.out.println("The number is 2");
-			for   (;i>0;i--) {
-				System.out.println("Going to 0");
-			}
+			for   (;i>0;i--)
+				if (i == 2)
+					System.out.println("Going to 0");
 		}
 		/* if(){
 		} else {
@@ -22,7 +22,7 @@ public class Test {
 		*/
 		if   (i > 0) {
 			System.out.println("The number is not 2 nor 0");
-			while   (i > 0) {
+			if   (i > 0) {
 				System.out.println("Going to 0");
 				i--;
 			}

@@ -1,11 +1,15 @@
 package engine;
 
-import java.io.BufferedReader;
+import japa.parser.JavaParser;
+import japa.parser.ParseException;
+import japa.parser.ast.CompilationUnit;
+import japa.parser.ast.body.MethodDeclaration;
+import japa.parser.ast.visitor.VoidVisitorAdapter;
+
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.lang.reflect.Method;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MethodUtilsImpl  implements MethodUtils{
 	
@@ -13,33 +17,45 @@ public class MethodUtilsImpl  implements MethodUtils{
 	}
 	
 	@Override
-	public Method[] getMethods(File program) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String getBody(File program, Method method) {
-		String s = getText(program);
-		return s;
+	public MethodCode[] getMethods(File program) {
+		CompilationUnit cu = null;
+		try {
+			cu = JavaParser.parse(program);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+        MethodVisitor mv = new MethodVisitor();
+        mv.visit(cu, null);
+        
+        ArrayList<MethodDeclaration> list = mv.getMethods();
+       
+        MethodCode[] methods = new MethodCode[list.size()];
+        
+        int i = 0;
+        for(MethodDeclaration method : list){
+        	methods[i] = new MethodCodeImpl(method);
+        	i++;
+        }
+		return methods;
 	}
 	
-	public static String getText(File file){
-    	File f = file;
-    	String string = "";
-    	try{
-            InputStream ips=new FileInputStream(f); 
-            InputStreamReader ipsr=new InputStreamReader(ips);
-            BufferedReader br=new BufferedReader(ipsr);
-            String line;
-            while ((line=br.readLine())!=null){
-                string+=line+"\n";
-            }
-            br.close(); 
-        }       
-        catch (Exception e){
-            System.out.println(e.toString());
+	private static class MethodVisitor extends VoidVisitorAdapter {
+		
+		ArrayList<MethodDeclaration> methodlist;
+		
+		public MethodVisitor(){
+			methodlist = new ArrayList<MethodDeclaration>();
+		}
+		
+        @Override
+        public void visit(MethodDeclaration m, Object arg) {
+            methodlist.add(m);
         }
-    	return string;
+        
+        public ArrayList<MethodDeclaration> getMethods(){
+        	return methodlist;
+        }
     }
 }

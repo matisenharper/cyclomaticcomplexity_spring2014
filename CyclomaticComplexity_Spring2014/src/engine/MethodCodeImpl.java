@@ -1,38 +1,47 @@
 package engine;
 
-import java.io.File;
-import java.lang.reflect.Method;
+import java.util.List;
 
-import Milestone1_Runner.Student;
+import japa.parser.ast.body.MethodDeclaration;
+import japa.parser.ast.body.Parameter;
 
 public class MethodCodeImpl implements MethodCode {
 
-	Student author;
-	Method method;
-	String body;
+	private MethodDeclaration method;
 	
-	public MethodCodeImpl(Student author, File program, Method method) {
-		this.author = author;
-		this.method = method;
-		
-		MethodUtils mu = new MethodUtilsImpl();
-		
-		body = mu.getBody(program, method);
+	
+	public MethodCodeImpl(MethodDeclaration m){
+		method = m;
 	}
 	
+	
 	@Override
-	public Student getAuthor() {
-		return author;
+	public String getName() {
+		return method.getName();
 	}
 
 	@Override
-	public Method getMethod() {
-		return method;
+	public String getType() {
+		return method.getType().toString();
 	}
+
+	@Override
+	public String[] getParameterTypes() {
+		List<Parameter> l = method.getParameters();
+		String[] parameters = new String[l.size()];
+		int i = 0;
+		for (Parameter p : l) {
+			parameters[i] = p.getType().toString();
+			i++;
+		}
+		return parameters;
+	}
+
 
 	@Override
 	public String getBody() {
-		return body;
+		return method.getBody().toString();
 	}
 
+	
 }
