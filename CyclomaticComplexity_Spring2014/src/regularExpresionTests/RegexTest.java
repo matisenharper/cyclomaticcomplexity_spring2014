@@ -24,13 +24,11 @@ public class RegexTest {
     	Student author = COSC3327_STUDENT_SMALL.SMITH;
     	
     	MethodUtils m = new MethodUtilsImpl();
-    	MethodCode[] methods = m.getMethods(file);
+    	MethodData[] methods = m.getMethods(file,author);
     	
     	
-    	for(MethodCode me : methods){
-    		MethodData code = new MethodDataImpl(author,methods[0]);
-        	
-        	g.getGraphModel(code);
+    	for(MethodData me : methods){
+    		g.getGraphModel(me);
         }
     }    
 }

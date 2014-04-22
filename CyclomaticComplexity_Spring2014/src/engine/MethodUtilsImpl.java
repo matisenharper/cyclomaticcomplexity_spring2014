@@ -11,13 +11,15 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import Milestone1_Runner.Student;
+
 public class MethodUtilsImpl  implements MethodUtils{
 	
 	public MethodUtilsImpl(){
 	}
 	
 	@Override
-	public MethodCode[] getMethods(File program) {
+	public MethodData[] getMethods(File program, Student s) {
 		CompilationUnit cu = null;
 		try {
 			cu = JavaParser.parse(program);
@@ -31,11 +33,12 @@ public class MethodUtilsImpl  implements MethodUtils{
         
         ArrayList<MethodDeclaration> list = mv.getMethods();
        
-        MethodCode[] methods = new MethodCode[list.size()];
+        MethodData[] methods = new MethodData[list.size()];
         
         int i = 0;
         for(MethodDeclaration method : list){
-        	methods[i] = new MethodCodeImpl(method);
+        	MethodCode m = new MethodCodeImpl(method);
+        	methods[i] = new MethodDataImpl(s,m);
         	i++;
         }
 		return methods;
