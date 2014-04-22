@@ -7,7 +7,7 @@ import japa.parser.ast.body.Parameter;
 
 public class MethodCodeImpl implements MethodCode {
 
-	private MethodDeclaration method;
+	MethodDeclaration method;
 	
 	
 	public MethodCodeImpl(MethodDeclaration m){

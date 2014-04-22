@@ -17,19 +17,20 @@ public class RegexTest {
 
     public static void main(String[] args){
         
-    	File file = new File("./src/engine/MethodCodeImpl.java");
+    	File file = new File("./src/regularExpresionTests/Test.java");
     	MethodCode method = null;
     	
     	GraphEngine g = new GraphEngineImpl();
     	Student author = COSC3327_STUDENT_SMALL.SMITH;
-    	MethodData code = new MethodDataImpl(author,method);
     	
-    	//g.getGraphModel(code);
     	MethodUtils m = new MethodUtilsImpl();
     	MethodCode[] methods = m.getMethods(file);
     	
+    	
     	for(MethodCode me : methods){
-        	 System.out.println(me.getBody());
+    		MethodData code = new MethodDataImpl(author,methods[0]);
+        	
+        	g.getGraphModel(code);
         }
     }    
 }
