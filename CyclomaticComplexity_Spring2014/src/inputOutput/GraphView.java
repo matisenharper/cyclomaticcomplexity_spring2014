@@ -2,33 +2,46 @@ package inputOutput;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.Scanner;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
+import javax.swing.JTextField;
+
+import engine.MethodCode;
+import engine.MethodData;
+import engine.MethodUtils;
+import engine.MethodUtilsImpl;
+import Milestone1_Runner.ModalDialog;
+import Milestone1_Runner.Student;
+
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.lang.reflect.Method;
 import java.net.URL;
 
 
-public class GraphView extends JFrame {
+public class GraphView extends JPanel 
+{
+	//this just for testing
+	static Method[] buttonArray = {null};
+	//
 
 	public GraphView() 
 	{
 
-		setTitle("Student Name");
 		setSize(950, 800);
-		setLocationRelativeTo(null);
-		setDefaultCloseOperation(EXIT_ON_CLOSE);        
+		//setLocationRelativeTo(null);
+		//setDefaultCloseOperation(EXIT_ON_CLOSE); 
 	}
 
 	private static class ImageShow extends JPanel
@@ -37,47 +50,113 @@ public class GraphView extends JFrame {
 		private JLabel label;
 
 		//constructor
-		ImageShow()
+		ImageShow(JPanel graph)
 		{
+			//this.getContentPane().setLayout(new BorderLayout());
 			setLayout(new BorderLayout());
 			image = new ImageIcon(getClass().getResource("demo.jpg"));
 			label = new JLabel(image);
 			add(label);
 		}
-
 	}
 
-
-	private static void createButton(String buttonName, JPanel buttons)
+	private static int getcal (int i)
 	{
+		JPanel buttons= new JPanel();
+		return i;
+	}
+
+	private MethodData[] gettingBody (File program, Student S)
+	{
+		MethodUtils m = new MethodUtilsImpl();
+		MethodData[] body =m.getMethods( program, S);
+		//to get the name of the stu
+		return body;
+	}
+
+	private static Image gettingImage (String body)
+	{
+		Image img = cyclomaticComplexity.GraphImage.getImage(body); 
+		return img;
+	}
+
+	private static int gettingComplexity (String body1)
+	{
+		int cal = cyclomaticComplexity.CyclomaticComplexityMethodCalc.getCyclomaticComplexity(body1); 
+		return cal;
+	}
+
+	private /*static*/ void createButton(MethodCode[] buttonName, JPanel buttons, Student studentName, File file)
+	{
+		int count =0;
 		JPanel buttonPanel= new JPanel();
 		//ButtonGroup methodGroup = new ButtonGroup();
-		JRadioButton button = new JRadioButton(buttonName, false);
+		File file2=file;
 
-
-		buttonPanel.add(button);
-		buttons.add(buttonPanel);
-
-		button.addActionListener(new ActionListener ()
+		while(count <= buttonName.length)
 		{
-			public void actionPerformed (ActionEvent  e )
+			String currentButton = buttonName[count].toString();
+			MethodCode buttonName2= buttonName[count];
+			//get method[count] name and put in methodName then create button named methodName
+			//String methodName= Method[count]>>> find way to get string name of method
+			JRadioButton button = new JRadioButton(buttonName2.getName().toString(), false);//will assing string to method when we know how
+			//getName get the name of the method
+
+			buttonPanel.add(button);
+			buttons.add(buttonPanel);
+
+			button.addActionListener(new ActionListener ()
 			{
-				System.out.println("button is still not working " + e);
-				//the teacher wants RuntimeException
-				//it will have to be in try catch
-			}
-		});
+				public void actionPerformed (ActionEvent  e, File file2, MethodCode buttonName2 )
+				{
+					/**********************************************/
+					
+
+					//first send the file to MethodUtilsImpl get method[]
+					//then when the button is called send the index 'nameOfMethod' with 
+					//student name to MethodDataImpl
+					
+					
+					/**********************************************/
+					/*gettingBody( file2, buttonName2);//clone return copy of object
+
+					getcal(gettingComplexity (gettingBody( file2, buttonName2)));	
+					ImageShow(gettingImage(gettingBody( file2, buttonName2)));*/
+					/*****************************************************/
+
+					System.out.println("button is still not working " + e);
+					//the teacher wants RuntimeException
+					//it will have to be in try catch
+				}
+
+				@Override
+				public void actionPerformed(ActionEvent arg0) {
+					// TODO Auto-generated method stub
+
+				}
+
+			});
+		}
 	}
 
+
+	private static JTextField complexityBox (int i)
+	{
+		//Scroll bar
+		System.out.println("complexityBox working");
+		/*JButton startButton = new JButton("Get Data");
+		startButton.setPreferredSize(new Dimension(8, 9));*/
+		JTextField calPanel = new JTextField(27);
+		calPanel.addActionListener(null);
+		return calPanel;
+	}
 
 	private static void MethodHeaderLooker(File file, JPanel graph) throws IOException
 	{
 		//method header example to look for
 		//final String REGEX = "/public [a-zA-Z1-9]([a-zA-Z1-9])private [a-zA-Z1-9]([a-zA-Z1-9])/";
-
 		//File filejava = new File(file);
 		System.out.println("running methodheaderlooker");
-
 
 		try 
 		{
@@ -146,7 +225,6 @@ public class GraphView extends JFrame {
 
 	public static void main(String args []) 
 	{
-
 		javax.swing.SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 
@@ -157,7 +235,7 @@ public class GraphView extends JFrame {
 				File file = new File(url.getPath());
 				System.out.println(file.getAbsolutePath());
 
-				GraphView graph = new GraphView();
+				GraphView graph = new GraphView();//M will do this
 				JPanel imagePanel = new JPanel();
 				JPanel buttons= new JPanel();
 				JPanel calPanel = new JPanel();
@@ -168,7 +246,9 @@ public class GraphView extends JFrame {
 				imagePanel.setBackground( Color.cyan);
 				calPanel.setBackground( Color.blue);
 				buttons.setBackground(Color.GREEN);
-				
+				/*Container c = JFrame.getContentPane();
+				c.setBackground(Color.red); */
+
 				//imagePanel.setVisible(true);
 				buttons.setVisible(true);
 				graph.setVisible(true);
@@ -176,14 +256,20 @@ public class GraphView extends JFrame {
 
 
 				showImage(imagePanel);
-
-				createButton("Test Button",buttons);
+				//call setData() to test code. comment out when actually running.
+				setData();
+				/*static Method[] buttonArray = {null};
+				createButton(buttonArray[],buttons);
 				try {
 					MethodHeaderLooker(file, buttons);
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
 					System.out.println("catch in main" + e);
-				};
+				};*/
+
+				complexityBox(9);
+
+
+				cyclomaticComplexityJDialogExample();
 			}
 		});
 
@@ -204,13 +290,35 @@ public class GraphView extends JFrame {
 					+ matcher.matches());*/
 	}
 
+	public static void cyclomaticComplexityJDialogExample()
+	{
+		System.out.println("start of jdialog with jpanel for ");
+		ModalDialog dlg = new ModalDialog(new GraphView(), "title", "Hebah's GUI/Cyclomatic Complexity View");
+		System.out.println("End of jdialog with jpanel ");
+	}
+
+
 	private static void showImage(JPanel graph)
 	{
-		ImageShow gui = new ImageShow();
+		ImageShow gui = new ImageShow(graph);
 		//gui.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		//gui.setVisible(true);
 		graph.add(gui);
 
+	}
+
+	Student author;
+	private void setData (File file, Student studentName)
+	{
+		//MethodUtilsImpl.getMethods(file);
+	}
+
+	//to test
+	private static void setData ()
+	{
+		File file = new File("Tic.txt");
+		String studentName = new String("Hebah");
+		Method[] buttonArray = new Method[]{null};
 	}
 }
 
