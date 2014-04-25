@@ -2,7 +2,7 @@ package regularExpresionTests;
 
 public class Test {
 
-    public static void main(String[] args){ //ddkfkkgkgjkhkhjkh
+    final static void main(String[] args){ //ddkfkkgkgjkhkhjkh
         int i = (int) (Math.random()*5);
 		/*dmgfkff if(){
 		kjdjdskjsda
@@ -12,25 +12,43 @@ public class Test {
 		*/
 		if   (i == 2) {
 			System.out.println("The number is 2");
-			for   (;i>0;i--)
-				if (i == 2)
+			for   (;i>0;i--){
+				if (i == 2){
 					System.out.println("Going to 0");
+					break;
+				}
+			}
 		}
-		/* if(){
-		} else {
-		}
-		*/
+		
 		if   (i > 0) {
-			System.out.println("The number is not 2 nor 0");
 			if   (i > 0) {
 				System.out.println("Going to 0");
-				i--;
 			}
 		}
 		else{
 			System.out.println("The number is 0");
 		}
-		return;
+		System.out.println("The number is 0");
+		/*switch(i){
+			case 0:
+				System.out.println("The number is 0");
+				break;
+			case 1:
+				System.out.println("The number is 1");
+				break;
+			case 2:
+				System.out.println("The number is 2");
+				break;
+			case 3:
+				System.out.println("The number is 3");
+				break;
+			case 4:
+				System.out.println("The number is 4");
+				break;
+			default:
+				System.out.println("The number is 5");
+				break;
+		}*/
     }
 }
 //Nodes (if)(for)(stat)(stat)(if)(while)(stat)(stat)(stat)(stat)

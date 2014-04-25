@@ -84,10 +84,16 @@ import japa.parser.ast.type.VoidType;
 import japa.parser.ast.type.WildcardType;
 import japa.parser.ast.visitor.VoidVisitorAdapter;
 
+import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.EnumSet;
+import java.util.List;
+import java.util.Set;
 
 import cyclomaticComplexity.GraphModel;
 import cyclomaticComplexity.GraphModelImpl;
@@ -101,26 +107,13 @@ public class GraphEngineImpl implements GraphEngine{
 	@Override
 	public GraphModel getGraphModel(MethodData method) {
 		
-		String code = method.getMethod().getBody();
-		
 		//generateGraphModel(code);
-		new StatementParser(StatementParser.getGraph().getNodeCount() - 1).visit(((MethodCodeImpl)method.getMethod()).method.getBody(), null);
+		StatementParser sp = new StatementParser(StatementParser.getGraph().getNodeCount() - 1);
+		sp.visit(((MethodCodeImpl)method.getMethod()).getBodyBlock(), null);
+		sp.addEndNode();
 		
-		ArrayList<int[]> ali = StatementParser.getGraph().getPaths();
 		
-		for (int i = 0; i < ali.size();i++){
-			System.out.print("("+ali.get(i)[0]+","+ali.get(i)[1]+")");
-		}
-		
-		System.out.print("\n\n");
-		
-		ArrayList<String> as = StatementParser.getGraph().getNodes();
-		
-		for (int i = 0; i < as.size();i++){
-			System.out.println("("+as.get(i)+")");
-		}
-		
-		return null;
+		return StatementParser.getGraph();
 	}
 	
 	
@@ -130,13 +123,29 @@ public class GraphEngineImpl implements GraphEngine{
     private static class StatementParser extends VoidVisitorAdapter {
     	private static GraphModel graph;
     	private int lastnode;
+    	private ArrayList<Integer> alternatelastnodes;
+    	private ArrayList<Integer> alternatebreaknodes;
     	
     	public StatementParser(int ln){
     		lastnode = ln;
+    		alternatelastnodes = new ArrayList<Integer>();
+    		alternatebreaknodes = new ArrayList<Integer>();
     	}
     	
-    	public static GraphModel getGraph() {
-			return graph;
+    	public void addEndNode() {
+    		graph.addNode("End");
+    		for(int aln:this.getAlternateLastnodes()){
+        		graph.addEdge(aln, graph.getNodeCount()-1);
+    		}
+			this.clearAlternateLastnodes();
+        	if(lastnode > -1){
+        		graph.addEdge(lastnode, graph.getNodeCount()-1);
+        	}
+			lastnode = graph.getNodeCount()-1;
+		}
+
+		public static GraphModel getGraph() {
+    		return graph;
 		}
 
 		public static void initializeGraph(){
@@ -146,7 +155,249 @@ public class GraphEngineImpl implements GraphEngine{
 		public int getLastnode() {
 			return lastnode;
 		}
+		
+		public ArrayList<Integer> getAlternateLastnodes() {
+			return alternatelastnodes;
+		}
+		
+		public void addAlternateLastnodes(int aln) {
+			if(!alternatelastnodes.contains(aln))
+				alternatelastnodes.add(aln);
+			System.out.println(alternatelastnodes);
+		}
+		
+		public void clearAlternateLastnodes() {
+			alternatelastnodes.clear();
+		}
+		
+		public ArrayList<Integer> getAlternateBreaknodes() {
+			return alternatebreaknodes;
+		}
 
+		public void addAlternateBreaknodes(int abn) {
+			if(!alternatebreaknodes.contains(abn))
+				alternatebreaknodes.add(abn);
+		}
+		
+		public void clearAlternateBreaknodes() {
+			alternatebreaknodes.clear();
+		}
+		
+		private void visit(Statement stmt, Object arg) {
+			stmt.accept(this, arg);
+		}
+		
+		@Override
+		public void visit(AssignExpr n, Object arg) {
+			graph.addNode("Assign Expresion");
+			for(int aln:this.getAlternateLastnodes()){
+        		graph.addEdge(aln, graph.getNodeCount()-1);
+    		}
+			this.clearAlternateLastnodes();
+        	if(lastnode > -1 && !this.getAlternateLastnodes().contains(lastnode)){
+        		graph.addEdge(lastnode, graph.getNodeCount()-1);
+        	}
+			lastnode = graph.getNodeCount()-1;
+		}
+		
+		@Override
+		public void visit(BreakStmt n, Object arg) {
+			graph.addNode("Break");
+			for(int aln:this.getAlternateLastnodes()){
+        		graph.addEdge(aln, graph.getNodeCount()-1);
+    		}
+			this.clearAlternateLastnodes();
+        	if(lastnode > -1 && !this.getAlternateLastnodes().contains(lastnode)){
+        		graph.addEdge(lastnode, graph.getNodeCount()-1);
+        	}
+			lastnode = -1;
+			this.addAlternateBreaknodes(graph.getNodeCount()-1);
+		}
+
+		@Override
+		public void visit(ForeachStmt n, Object arg) {
+			graph.addNode("ForEach");
+			int forstart = graph.getNodeCount()-1;
+			int forend = -1;
+			StatementParser parser;
+        	
+        	if(lastnode > -1 && !this.getAlternateLastnodes().contains(lastnode)){
+        		graph.addEdge(lastnode, forstart);
+        	}
+        	
+        	lastnode = graph.getNodeCount()-1;
+        	
+        	if(n.getBody() != null){
+        		parser = new StatementParser(forstart);
+                parser.visit(n.getBody(), null);
+                forend = parser.getLastnode();
+                
+                for(int abn:parser.getAlternateBreaknodes()){
+        			this.addAlternateBreaknodes(abn);
+        		}
+        		
+        		for(int aln:parser.getAlternateLastnodes()){
+        			this.addAlternateLastnodes(aln);
+        		}
+        	}
+        	
+        	for(int abn:this.getAlternateBreaknodes()){
+    			this.addAlternateLastnodes(abn);
+    		}
+        	this.clearAlternateBreaknodes();
+        	
+        	if(forend > -1 && forend != lastnode){
+        		lastnode = forend;
+        	}
+        	if(lastnode != forstart){
+        		this.addAlternateLastnodes(forstart);
+        	}
+		}
+
+		@Override
+		public void visit(ForStmt n, Object arg) {
+			graph.addNode("For");
+			int forstart = graph.getNodeCount()-1;
+			int forend = -1;
+			StatementParser parser;
+        	
+        	if(lastnode > -1 && !this.getAlternateLastnodes().contains(lastnode)){
+        		graph.addEdge(lastnode, forstart);
+        	}
+        	
+        	lastnode = graph.getNodeCount()-1;
+        	
+        	if(n.getBody() != null){
+        		parser = new StatementParser(forstart);
+                parser.visit(n.getBody(), null);
+                forend = parser.getLastnode();
+                
+                for(int abn:parser.getAlternateBreaknodes()){
+        			this.addAlternateBreaknodes(abn);
+        		}
+        		
+        		for(int aln:parser.getAlternateLastnodes()){
+        			this.addAlternateLastnodes(aln);
+        		}
+        	}
+        	
+        	for(int abn:this.getAlternateBreaknodes()){
+    			this.addAlternateLastnodes(abn);
+    		}
+        	this.clearAlternateBreaknodes();
+        	
+        	if(forend > -1 && forend != lastnode){
+        		lastnode = forend;
+        	}
+        	if(lastnode != forstart){
+        		this.addAlternateLastnodes(forstart);
+        	}
+		}
+
+		@Override
+        public void visit(IfStmt n, Object arg) {
+        	graph.addNode("If");
+        	int ifstart = graph.getNodeCount()-1;
+        	int ifend = -1;
+        	int elseend = ifstart;
+        	StatementParser parser;
+        	
+        	if(lastnode > -1 && !this.getAlternateLastnodes().contains(lastnode)){
+        		graph.addEdge(lastnode, ifstart);
+        	}
+        	
+        	for(int aln:this.getAlternateLastnodes()){
+        		graph.addEdge(aln, ifstart);
+    		}
+        	this.clearAlternateLastnodes();
+    		
+    		lastnode = graph.getNodeCount()-1;
+        	
+        	if(n.getThenStmt() != null){
+        		parser = new StatementParser(ifstart);
+        		
+        		parser.visit(n.getThenStmt(), null);
+        		
+        		ifend = parser.getLastnode();
+        		
+        		for(int abn:parser.getAlternateBreaknodes()){
+        			this.addAlternateBreaknodes(abn);
+        		}
+        		
+        		for(int aln:parser.getAlternateLastnodes()){
+        			this.addAlternateLastnodes(aln);
+        		}
+        	}
+        	if(n.getElseStmt() != null){
+        		parser = new StatementParser(ifstart);
+        		
+        		parser.visit(n.getElseStmt(), null);
+                
+        		elseend = parser.getLastnode();
+                
+        		for(int abn:parser.getAlternateBreaknodes()){
+        			this.addAlternateBreaknodes(abn);
+        		}
+        		
+        		for(int aln:parser.getAlternateLastnodes()){
+        			this.addAlternateLastnodes(aln);
+        		}
+        	}
+        	
+        	if(ifend > -1){
+        		lastnode = ifend;
+        	}
+        	if(elseend != ifend && elseend > -1){
+        		this.addAlternateLastnodes(elseend);
+        	}
+        }
+        
+		@Override
+		public void visit(MethodCallExpr n, Object arg) {
+			graph.addNode("Method Call");
+			for(int aln:this.getAlternateLastnodes()){
+        		graph.addEdge(aln, graph.getNodeCount()-1);
+    		}
+			this.clearAlternateLastnodes();
+			if(lastnode > -1 && !this.getAlternateLastnodes().contains(lastnode)){
+        		graph.addEdge(lastnode, graph.getNodeCount()-1);
+        	}
+			lastnode = graph.getNodeCount()-1;
+		}
+		
+		@Override
+		public void visit(ReturnStmt n, Object arg) {
+			graph.addNode("Return");
+			for(int aln:this.getAlternateLastnodes()){
+        		graph.addEdge(aln, graph.getNodeCount()-1);
+    		}
+			this.clearAlternateLastnodes();
+			if(lastnode > -1 && !this.getAlternateLastnodes().contains(lastnode)){
+        		graph.addEdge(lastnode, graph.getNodeCount()-1);
+        	}
+			lastnode = -1;
+		}
+		
+		@Override
+		public void visit(SwitchEntryStmt n, Object arg) {
+			// TODO Auto-generated method stub
+			super.visit(n, arg);
+		}
+
+		@Override
+		public void visit(SwitchStmt n, Object arg) {
+			List<SwitchEntryStmt> cases = n.getEntries();
+			int endswitch[] = new int[cases.size()];
+			
+			for(SwitchEntryStmt s:cases){
+				System.out.println();
+				for(Statement r:s.getStmts()){
+					System.out.println(r.toString());
+				}
+			}
+		}
+		
+		//Not implemented statements
 		@Override
 		public void visit(AnnotationDeclaration n, Object arg) {
 			// TODO Auto-generated method stub
@@ -184,16 +435,6 @@ public class GraphEngineImpl implements GraphEngine{
 		}
 		
 		@Override
-		public void visit(AssignExpr n, Object arg) {
-			graph.addNode("Assign Expresion");
-			if(lastnode > -1){
-        		graph.addEdge(lastnode, graph.getNodeCount()-1);
-        	}
-        	lastnode = graph.getNodeCount()-1;
-		}
-
-
-		@Override
 		public void visit(BinaryExpr n, Object arg) {
 			// TODO Auto-generated method stub
 			super.visit(n, arg);
@@ -213,12 +454,6 @@ public class GraphEngineImpl implements GraphEngine{
 
 		@Override
 		public void visit(BooleanLiteralExpr n, Object arg) {
-			// TODO Auto-generated method stub
-			super.visit(n, arg);
-		}
-
-		@Override
-		public void visit(BreakStmt n, Object arg) {
 			// TODO Auto-generated method stub
 			super.visit(n, arg);
 		}
@@ -356,102 +591,6 @@ public class GraphEngineImpl implements GraphEngine{
 		}
 
 		@Override
-		public void visit(ForeachStmt n, Object arg) {
-			graph.addNode("foreach");
-			int forstart = graph.getNodeCount()-1;
-			int forend = -1;
-			StatementParser parser;
-        	
-        	if(lastnode > -1){
-        		graph.addEdge(lastnode, forstart);
-        	}
-        	
-        	lastnode = graph.getNodeCount()-1;
-        	
-        	if(n.getBody() != null){
-        		parser = new StatementParser(forstart);
-                parser.visit(n.getBody(), null);
-                forend = parser.getLastnode();
-        	}
-        	
-        	graph.addNode("endForeach");
-        	
-        	if(forend > -1 && forend != lastnode){
-        		graph.addEdge(forend, graph.getNodeCount()-1);
-        	}
-        	
-        	graph.addEdge(forstart,graph.getNodeCount()-1);
-        	lastnode = graph.getNodeCount()-1;
-		}
-
-		@Override
-		public void visit(ForStmt n, Object arg) {
-			graph.addNode("for");
-			int forstart = graph.getNodeCount()-1;
-			int forend = -1;
-			StatementParser parser;
-        	
-        	if(lastnode > -1){
-        		graph.addEdge(lastnode, forstart);
-        	}
-        	
-        	lastnode = graph.getNodeCount()-1;
-        	
-        	if(n.getBody() != null){
-        		parser = new StatementParser(forstart);
-                parser.visit(n.getBody(), null);
-                forend = parser.getLastnode();
-        	}
-        	
-        	graph.addNode("endFor");
-        	
-        	if(forend > -1 && forend != lastnode){
-        		graph.addEdge(forend, graph.getNodeCount()-1);
-        	}
-        	
-        	graph.addEdge(forstart,graph.getNodeCount()-1);
-        	lastnode = graph.getNodeCount()-1;
-		}
-
-		@Override
-        public void visit(IfStmt n, Object arg) {
-        	graph.addNode("if");
-        	int ifstart = graph.getNodeCount()-1;
-        	int ifend = -1;
-        	int elseend = -1;
-        	StatementParser parser;
-        	
-        	if(lastnode > -1){
-        		graph.addEdge(lastnode, ifstart);
-        	}
-        	lastnode = graph.getNodeCount()-1;
-        	
-        	if(n.getThenStmt() != null){
-        		parser = new StatementParser(ifstart);
-                parser.visit(n.getThenStmt(), null);
-        		ifend = parser.getLastnode();
-        	}
-        	if(n.getElseStmt() != null){
-        		parser = new StatementParser(ifstart);
-        		parser.visit(n.getElseStmt(), null);
-                elseend = parser.getLastnode();
-        	}
-        	
-        	graph.addNode("endIf");
-        	
-        	if(ifend > -1 && ifend != lastnode){
-        		graph.addEdge(ifend, graph.getNodeCount()-1);
-        	}
-        	if(elseend != ifend && elseend > -1 && elseend != lastnode){
-        		graph.addEdge(elseend, graph.getNodeCount()-1);
-        	}else{
-        		graph.addEdge(ifstart,graph.getNodeCount()-1);
-        	}
-        	
-        	lastnode = graph.getNodeCount()-1;
-        }
-        
-        @Override
 		public void visit(ImportDeclaration n, Object arg) {
 			// TODO Auto-generated method stub
 			super.visit(n, arg);
@@ -524,15 +663,6 @@ public class GraphEngineImpl implements GraphEngine{
 		}
 
 		@Override
-		public void visit(MethodCallExpr n, Object arg) {
-			graph.addNode("Method Call");
-			if(lastnode > -1){
-        		graph.addEdge(lastnode, graph.getNodeCount()-1);
-        	}
-        	lastnode = graph.getNodeCount()-1;
-		}
-		
-		@Override
 		public void visit(MethodDeclaration n, Object arg) {
 			// TODO Auto-generated method stub
 			super.visit(n, arg);
@@ -593,12 +723,6 @@ public class GraphEngineImpl implements GraphEngine{
 		}
 
 		@Override
-		public void visit(ReturnStmt n, Object arg) {
-			// TODO Auto-generated method stub
-			super.visit(n, arg);
-		}
-
-		@Override
 		public void visit(SingleMemberAnnotationExpr n, Object arg) {
 			// TODO Auto-generated method stub
 			super.visit(n, arg);
@@ -613,17 +737,6 @@ public class GraphEngineImpl implements GraphEngine{
 		@Override
 		public void visit(SuperExpr n, Object arg) {
 			// TODO Auto-generated method stub
-			super.visit(n, arg);
-		}
-
-		@Override
-		public void visit(SwitchEntryStmt n, Object arg) {
-			// TODO Auto-generated method stub
-			super.visit(n, arg);
-		}
-
-		@Override
-		public void visit(SwitchStmt n, Object arg) {
 			super.visit(n, arg);
 		}
 
@@ -706,29 +819,6 @@ public class GraphEngineImpl implements GraphEngine{
 		public void visit(WildcardType n, Object arg) {
 			// TODO Auto-generated method stub
 			super.visit(n, arg);
-		}
-
-		private void visit(Statement stmt, Object arg) {
-			stmt.accept(this, arg);
-		}
-
-		public static CompilationUnit getCompilationUnit(String code){
-			InputStream in = new ByteArrayInputStream( code.getBytes() );
-	        CompilationUnit cu = null;
-	        
-	        try {
-	            // parse the file
-	            cu = JavaParser.parse(in);
-	        } catch (ParseException e) {
-				//e.printStackTrace();
-			} finally {
-	            try {
-					in.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-	        }
-	        return cu;
 		}
     }
 }

@@ -24,4 +24,14 @@ public class MethodDataImpl implements MethodData {
 	public MethodCode getMethod() {
 		return method;
 	}
+
+	@Override
+	public String getName() {
+		return method.getName();
+	}
+
+	@Override
+	public String getMethodSignature() {
+		return method.toString();
+	}
 }
