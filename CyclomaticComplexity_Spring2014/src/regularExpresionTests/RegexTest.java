@@ -8,8 +8,7 @@ import java.util.ArrayList;
 
 import cyclomaticComplexity.GraphModel;
 import cyclomaticComplexity.GraphModelImpl;
-import Milestone1_Runner.COSC3327_STUDENT_SMALL;
-import Milestone1_Runner.Student;
+import MISC.Student;
 import engine.GraphEngine;
 import engine.GraphEngineImpl;
 import engine.MethodCodeImpl;
@@ -27,7 +26,7 @@ public class RegexTest {
     	MethodCode method = null;
     	
     	GraphEngine g = new GraphEngineImpl();
-    	Student author = COSC3327_STUDENT_SMALL.SMITH;
+    	Student author = Spring2014Users.Student.BOB;
     	
     	MethodUtils m = new MethodUtilsImpl();
     	MethodData[] methods = m.getMethods(file,author);

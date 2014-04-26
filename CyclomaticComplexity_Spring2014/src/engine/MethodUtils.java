@@ -3,7 +3,7 @@ package engine;
 import java.io.File;
 import java.lang.reflect.Method;
 
-import Milestone1_Runner.Student;
+import MISC.Student;
 
 public interface MethodUtils {
 	

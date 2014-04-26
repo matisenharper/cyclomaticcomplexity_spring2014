@@ -11,7 +11,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import Milestone1_Runner.Student;
+import MISC.Student;
 
 public class MethodUtilsImpl  implements MethodUtils{
 	

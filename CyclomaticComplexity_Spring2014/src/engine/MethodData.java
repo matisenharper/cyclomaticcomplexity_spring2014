@@ -1,6 +1,6 @@
 package engine;
 
-import Milestone1_Runner.Student;
+import MISC.Student;
 
 public interface MethodData {
 	Student getAuthor();
