@@ -1,120 +1,824 @@
 package engine;
 
+import japa.parser.JavaParser;
+import japa.parser.ParseException;
+import japa.parser.ast.BlockComment;
+import japa.parser.ast.CompilationUnit;
+import japa.parser.ast.ImportDeclaration;
+import japa.parser.ast.LineComment;
+import japa.parser.ast.PackageDeclaration;
+import japa.parser.ast.TypeParameter;
+import japa.parser.ast.body.AnnotationDeclaration;
+import japa.parser.ast.body.AnnotationMemberDeclaration;
+import japa.parser.ast.body.ClassOrInterfaceDeclaration;
+import japa.parser.ast.body.ConstructorDeclaration;
+import japa.parser.ast.body.EmptyMemberDeclaration;
+import japa.parser.ast.body.EmptyTypeDeclaration;
+import japa.parser.ast.body.EnumConstantDeclaration;
+import japa.parser.ast.body.EnumDeclaration;
+import japa.parser.ast.body.FieldDeclaration;
+import japa.parser.ast.body.InitializerDeclaration;
+import japa.parser.ast.body.JavadocComment;
+import japa.parser.ast.body.MethodDeclaration;
+import japa.parser.ast.body.Parameter;
+import japa.parser.ast.body.VariableDeclarator;
+import japa.parser.ast.body.VariableDeclaratorId;
+import japa.parser.ast.expr.ArrayAccessExpr;
+import japa.parser.ast.expr.ArrayCreationExpr;
+import japa.parser.ast.expr.ArrayInitializerExpr;
+import japa.parser.ast.expr.AssignExpr;
+import japa.parser.ast.expr.BinaryExpr;
+import japa.parser.ast.expr.BooleanLiteralExpr;
+import japa.parser.ast.expr.CastExpr;
+import japa.parser.ast.expr.CharLiteralExpr;
+import japa.parser.ast.expr.ClassExpr;
+import japa.parser.ast.expr.ConditionalExpr;
+import japa.parser.ast.expr.DoubleLiteralExpr;
+import japa.parser.ast.expr.EnclosedExpr;
+import japa.parser.ast.expr.FieldAccessExpr;
+import japa.parser.ast.expr.InstanceOfExpr;
+import japa.parser.ast.expr.IntegerLiteralExpr;
+import japa.parser.ast.expr.IntegerLiteralMinValueExpr;
+import japa.parser.ast.expr.LongLiteralExpr;
+import japa.parser.ast.expr.LongLiteralMinValueExpr;
+import japa.parser.ast.expr.MarkerAnnotationExpr;
+import japa.parser.ast.expr.MemberValuePair;
+import japa.parser.ast.expr.MethodCallExpr;
+import japa.parser.ast.expr.NameExpr;
+import japa.parser.ast.expr.NormalAnnotationExpr;
+import japa.parser.ast.expr.NullLiteralExpr;
+import japa.parser.ast.expr.ObjectCreationExpr;
+import japa.parser.ast.expr.QualifiedNameExpr;
+import japa.parser.ast.expr.SingleMemberAnnotationExpr;
+import japa.parser.ast.expr.StringLiteralExpr;
+import japa.parser.ast.expr.SuperExpr;
+import japa.parser.ast.expr.ThisExpr;
+import japa.parser.ast.expr.UnaryExpr;
+import japa.parser.ast.expr.VariableDeclarationExpr;
+import japa.parser.ast.stmt.AssertStmt;
+import japa.parser.ast.stmt.BlockStmt;
+import japa.parser.ast.stmt.BreakStmt;
+import japa.parser.ast.stmt.CatchClause;
+import japa.parser.ast.stmt.ContinueStmt;
+import japa.parser.ast.stmt.DoStmt;
+import japa.parser.ast.stmt.EmptyStmt;
+import japa.parser.ast.stmt.ExplicitConstructorInvocationStmt;
+import japa.parser.ast.stmt.ExpressionStmt;
+import japa.parser.ast.stmt.ForStmt;
+import japa.parser.ast.stmt.ForeachStmt;
+import japa.parser.ast.stmt.IfStmt;
+import japa.parser.ast.stmt.LabeledStmt;
+import japa.parser.ast.stmt.ReturnStmt;
+import japa.parser.ast.stmt.Statement;
+import japa.parser.ast.stmt.SwitchEntryStmt;
+import japa.parser.ast.stmt.SwitchStmt;
+import japa.parser.ast.stmt.SynchronizedStmt;
+import japa.parser.ast.stmt.ThrowStmt;
+import japa.parser.ast.stmt.TryStmt;
+import japa.parser.ast.stmt.TypeDeclarationStmt;
+import japa.parser.ast.stmt.WhileStmt;
+import japa.parser.ast.type.ClassOrInterfaceType;
+import japa.parser.ast.type.PrimitiveType;
+import japa.parser.ast.type.ReferenceType;
+import japa.parser.ast.type.VoidType;
+import japa.parser.ast.type.WildcardType;
+import japa.parser.ast.visitor.VoidVisitorAdapter;
+
+import java.io.BufferedWriter;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.regex.Pattern;
-import java.util.regex.Matcher;
+import java.util.EnumSet;
+import java.util.List;
+import java.util.Set;
 
 import cyclomaticComplexity.GraphModel;
 import cyclomaticComplexity.GraphModelImpl;
 
 public class GraphEngineImpl implements GraphEngine{
 
-	GraphModel graph;
-	
 	public GraphEngineImpl(){
-		graph = new GraphModelImpl();
+		StatementParser.initializeGraph();
 	}
 	
 	@Override
-	public GraphModel getGraphModel(MethodCode method) {
+	public GraphModel getGraphModel(MethodData method) {
 		
-		String code = method.getBody();
+		//generateGraphModel(code);
+		StatementParser sp = new StatementParser(StatementParser.getGraph().getNodeCount() - 1);
+		sp.visit(((MethodCodeImpl)method.getMethod()).getBodyBlock(), null);
+		sp.addEndNode();
 		
-		generateGraphModel(code,graph.getNodeCount());
 		
-		ArrayList<int[]> ali = graph.getPaths();
-		
-		for (int i = 0; i < ali.size();i++){
-			System.out.print("("+ali.get(i)[0]+","+ali.get(i)[1]+")");
-		}
-		
-		System.out.print("\n\n");
-		
-		ArrayList<String> as = graph.getNodes();
-		
-		for (int i = 0; i < as.size();i++){
-			System.out.print("("+as.get(i)+")");
-		}
-		
-		return null;
+		return StatementParser.getGraph();
 	}
 	
-	public int generateGraphModel(String method, int tempnode){
-		int i;
-		boolean finish = false;
-		int start = -1;
-		int end = -1;
-		int first = -1;
-		int startcurly = -1;
-		int lastnode = 0;
+	
+	/**
+     * Simple visitor implementation for visiting MethodDeclaration nodes.
+     */
+    private static class StatementParser extends VoidVisitorAdapter {
+    	private static GraphModel graph;
+    	private int lastnode;
+    	private ArrayList<Integer> alternatelastnodes;
+    	private ArrayList<Integer> alternatebreaknodes;
+    	
+    	public StatementParser(int ln){
+    		lastnode = ln;
+    		alternatelastnodes = new ArrayList<Integer>();
+    		alternatebreaknodes = new ArrayList<Integer>();
+    	}
+    	
+    	public void addEndNode() {
+    		graph.addNode("End");
+    		for(int aln:this.getAlternateLastnodes()){
+        		graph.addEdge(aln, graph.getNodeCount()-1);
+    		}
+			this.clearAlternateLastnodes();
+        	if(lastnode > -1){
+        		graph.addEdge(lastnode, graph.getNodeCount()-1);
+        	}
+			lastnode = graph.getNodeCount()-1;
+		}
+
+		public static GraphModel getGraph() {
+    		return graph;
+		}
+
+		public static void initializeGraph(){
+    		graph = new GraphModelImpl();
+    	}
+    	
+		public int getLastnode() {
+			return lastnode;
+		}
 		
-		Pattern[] patterns = ExpresionMatcher.getPatternExpresions();
-		Matcher expresion;
+		public ArrayList<Integer> getAlternateLastnodes() {
+			return alternatelastnodes;
+		}
 		
-		String code = ExpresionMatcher.removeComments(method);
+		public void addAlternateLastnodes(int aln) {
+			if(!alternatelastnodes.contains(aln))
+				alternatelastnodes.add(aln);
+			System.out.println(alternatelastnodes);
+		}
 		
-		while(!finish){
-			first = -1;
-			start = -1;
-			end = -1;
-			for(i = 0;i < patterns.length;i++){
-				expresion = patterns[i].matcher(code);
-				if(expresion.find()){
-					if(start < 0 || expresion.start() <= start){
-						start = expresion.start();
-						end = expresion.end();
-						first = i;
-					}
-				}
-			}
+		public void clearAlternateLastnodes() {
+			alternatelastnodes.clear();
+		}
+		
+		public ArrayList<Integer> getAlternateBreaknodes() {
+			return alternatebreaknodes;
+		}
+
+		public void addAlternateBreaknodes(int abn) {
+			if(!alternatebreaknodes.contains(abn))
+				alternatebreaknodes.add(abn);
+		}
+		
+		public void clearAlternateBreaknodes() {
+			alternatebreaknodes.clear();
+		}
+		
+		private void visit(Statement stmt, Object arg) {
+			stmt.accept(this, arg);
+		}
+		
+		@Override
+		public void visit(AssignExpr n, Object arg) {
+			graph.addNode("Assign Expresion");
+			for(int aln:this.getAlternateLastnodes()){
+        		graph.addEdge(aln, graph.getNodeCount()-1);
+    		}
+			this.clearAlternateLastnodes();
+        	if(lastnode > -1 && !this.getAlternateLastnodes().contains(lastnode)){
+        		graph.addEdge(lastnode, graph.getNodeCount()-1);
+        	}
+			lastnode = graph.getNodeCount()-1;
+		}
+		
+		@Override
+		public void visit(BreakStmt n, Object arg) {
+			graph.addNode("Break");
+			for(int aln:this.getAlternateLastnodes()){
+        		graph.addEdge(aln, graph.getNodeCount()-1);
+    		}
+			this.clearAlternateLastnodes();
+        	if(lastnode > -1 && !this.getAlternateLastnodes().contains(lastnode)){
+        		graph.addEdge(lastnode, graph.getNodeCount()-1);
+        	}
+			lastnode = -1;
+			this.addAlternateBreaknodes(graph.getNodeCount()-1);
+		}
+
+		@Override
+		public void visit(ForeachStmt n, Object arg) {
+			graph.addNode("ForEach");
+			int forstart = graph.getNodeCount()-1;
+			int forend = -1;
+			StatementParser parser;
+        	
+        	if(lastnode > -1 && !this.getAlternateLastnodes().contains(lastnode)){
+        		graph.addEdge(lastnode, forstart);
+        	}
+        	
+        	lastnode = graph.getNodeCount()-1;
+        	
+        	if(n.getBody() != null){
+        		parser = new StatementParser(forstart);
+                parser.visit(n.getBody(), null);
+                forend = parser.getLastnode();
+                
+                for(int abn:parser.getAlternateBreaknodes()){
+        			this.addAlternateBreaknodes(abn);
+        		}
+        		
+        		for(int aln:parser.getAlternateLastnodes()){
+        			this.addAlternateLastnodes(aln);
+        		}
+        	}
+        	
+        	for(int abn:this.getAlternateBreaknodes()){
+    			this.addAlternateLastnodes(abn);
+    		}
+        	this.clearAlternateBreaknodes();
+        	
+        	if(forend > -1 && forend != lastnode){
+        		lastnode = forend;
+        	}
+        	if(lastnode != forstart){
+        		this.addAlternateLastnodes(forstart);
+        	}
+		}
+
+		@Override
+		public void visit(ForStmt n, Object arg) {
+			graph.addNode("For");
+			int forstart = graph.getNodeCount()-1;
+			int forend = -1;
+			StatementParser parser;
+        	
+        	if(lastnode > -1 && !this.getAlternateLastnodes().contains(lastnode)){
+        		graph.addEdge(lastnode, forstart);
+        	}
+        	
+        	lastnode = graph.getNodeCount()-1;
+        	
+        	if(n.getBody() != null){
+        		parser = new StatementParser(forstart);
+                parser.visit(n.getBody(), null);
+                forend = parser.getLastnode();
+                
+                for(int abn:parser.getAlternateBreaknodes()){
+        			this.addAlternateBreaknodes(abn);
+        		}
+        		
+        		for(int aln:parser.getAlternateLastnodes()){
+        			this.addAlternateLastnodes(aln);
+        		}
+        	}
+        	
+        	for(int abn:this.getAlternateBreaknodes()){
+    			this.addAlternateLastnodes(abn);
+    		}
+        	this.clearAlternateBreaknodes();
+        	
+        	if(forend > -1 && forend != lastnode){
+        		lastnode = forend;
+        	}
+        	if(lastnode != forstart){
+        		this.addAlternateLastnodes(forstart);
+        	}
+		}
+
+		@Override
+        public void visit(IfStmt n, Object arg) {
+        	graph.addNode("If");
+        	int ifstart = graph.getNodeCount()-1;
+        	int ifend = -1;
+        	int elseend = ifstart;
+        	StatementParser parser;
+        	
+        	if(lastnode > -1 && !this.getAlternateLastnodes().contains(lastnode)){
+        		graph.addEdge(lastnode, ifstart);
+        	}
+        	
+        	for(int aln:this.getAlternateLastnodes()){
+        		graph.addEdge(aln, ifstart);
+    		}
+        	this.clearAlternateLastnodes();
+    		
+    		lastnode = graph.getNodeCount()-1;
+        	
+        	if(n.getThenStmt() != null){
+        		parser = new StatementParser(ifstart);
+        		
+        		parser.visit(n.getThenStmt(), null);
+        		
+        		ifend = parser.getLastnode();
+        		
+        		for(int abn:parser.getAlternateBreaknodes()){
+        			this.addAlternateBreaknodes(abn);
+        		}
+        		
+        		for(int aln:parser.getAlternateLastnodes()){
+        			this.addAlternateLastnodes(aln);
+        		}
+        	}
+        	if(n.getElseStmt() != null){
+        		parser = new StatementParser(ifstart);
+        		
+        		parser.visit(n.getElseStmt(), null);
+                
+        		elseend = parser.getLastnode();
+                
+        		for(int abn:parser.getAlternateBreaknodes()){
+        			this.addAlternateBreaknodes(abn);
+        		}
+        		
+        		for(int aln:parser.getAlternateLastnodes()){
+        			this.addAlternateLastnodes(aln);
+        		}
+        	}
+        	
+        	if(ifend > -1){
+        		lastnode = ifend;
+        	}
+        	if(elseend != ifend && elseend > -1){
+        		this.addAlternateLastnodes(elseend);
+        	}
+        }
+        
+		@Override
+		public void visit(MethodCallExpr n, Object arg) {
+			graph.addNode("Method Call");
+			for(int aln:this.getAlternateLastnodes()){
+        		graph.addEdge(aln, graph.getNodeCount()-1);
+    		}
+			this.clearAlternateLastnodes();
+			if(lastnode > -1 && !this.getAlternateLastnodes().contains(lastnode)){
+        		graph.addEdge(lastnode, graph.getNodeCount()-1);
+        	}
+			lastnode = graph.getNodeCount()-1;
+		}
+		
+		@Override
+		public void visit(ReturnStmt n, Object arg) {
+			graph.addNode("Return");
+			for(int aln:this.getAlternateLastnodes()){
+        		graph.addEdge(aln, graph.getNodeCount()-1);
+    		}
+			this.clearAlternateLastnodes();
+			if(lastnode > -1 && !this.getAlternateLastnodes().contains(lastnode)){
+        		graph.addEdge(lastnode, graph.getNodeCount()-1);
+        	}
+			lastnode = -1;
+		}
+		
+		@Override
+		public void visit(SwitchEntryStmt n, Object arg) {
+			// TODO Auto-generated method stub
+			super.visit(n, arg);
+		}
+
+		@Override
+		public void visit(SwitchStmt n, Object arg) {
+			List<SwitchEntryStmt> cases = n.getEntries();
+			int endswitch[] = new int[cases.size()];
 			
-			if(start == -1){
-				finish = true;
-				addNode("stat", tempnode, lastnode);
-			}else{
-				switch(first){
-				case 0:
-					startcurly = ExpresionMatcher.getNextCurly(code,ExpresionMatcher.getEndofParenthesis(code, end));
-					end = ExpresionMatcher.getEndofCurly(code, startcurly);
-					addNode("if", tempnode, lastnode);
-					tempnode = graph.getNodeCount();
-					lastnode = generateGraphModel(code.substring(startcurly, end-1),tempnode);
-					break;
-				case 1:
-					startcurly = end;
-					end = ExpresionMatcher.getEndofCurly(code, startcurly);
-					tempnode = generateGraphModel(code.substring(startcurly, end-1),tempnode);
-					break;
-				case 2:
-					startcurly = ExpresionMatcher.getNextCurly(code,ExpresionMatcher.getEndofParenthesis(code, end));
-					end = ExpresionMatcher.getEndofCurly(code, startcurly);
-					addNode("while", tempnode, lastnode);
-					tempnode = graph.getNodeCount();
-					lastnode = generateGraphModel(code.substring(startcurly, end-1),tempnode);
-					break;
-				case 3:
-					startcurly = ExpresionMatcher.getNextCurly(code,ExpresionMatcher.getEndofParenthesis(code, end));
-					end = ExpresionMatcher.getEndofCurly(code, startcurly);
-					addNode("for", tempnode, lastnode);
-					tempnode = graph.getNodeCount();
-					lastnode = generateGraphModel(code.substring(startcurly, end-1),tempnode);
-					break;
+			for(SwitchEntryStmt s:cases){
+				System.out.println();
+				for(Statement r:s.getStmts()){
+					System.out.println(r.toString());
 				}
-				code = code.substring(end);
 			}
 		}
-		return graph.getNodeCount();
-	}
-	
-	
-	void addNode(String type, int tempnode,int lastnode){
-		graph.addNode(type);
-		if(lastnode > 0){
-			graph.addEdge(lastnode-1, graph.getNodeCount()-1);
+		
+		//Not implemented statements
+		@Override
+		public void visit(AnnotationDeclaration n, Object arg) {
+			// TODO Auto-generated method stub
+			super.visit(n, arg);
 		}
-		if(tempnode > 0){
-			graph.addEdge(tempnode-1, graph.getNodeCount()-1);
+
+		@Override
+		public void visit(AnnotationMemberDeclaration n, Object arg) {
+			// TODO Auto-generated method stub
+			super.visit(n, arg);
+		}
+
+		@Override
+		public void visit(ArrayAccessExpr n, Object arg) {
+			// TODO Auto-generated method stub
+			super.visit(n, arg);
+		}
+
+		@Override
+		public void visit(ArrayCreationExpr n, Object arg) {
+			// TODO Auto-generated method stub
+			super.visit(n, arg);
+		}
+
+		@Override
+		public void visit(ArrayInitializerExpr n, Object arg) {
+			// TODO Auto-generated method stub
+			super.visit(n, arg);
+		}
+
+		@Override
+		public void visit(AssertStmt n, Object arg) {
+			// TODO Auto-generated method stub
+			super.visit(n, arg);
 		}
 		
-	}
+		@Override
+		public void visit(BinaryExpr n, Object arg) {
+			// TODO Auto-generated method stub
+			super.visit(n, arg);
+		}
+
+		@Override
+		public void visit(BlockComment n, Object arg) {
+			// TODO Auto-generated method stub
+			super.visit(n, arg);
+		}
+
+		@Override
+		public void visit(BlockStmt n, Object arg) {
+			// TODO Auto-generated method stub
+			super.visit(n, arg);
+		}
+
+		@Override
+		public void visit(BooleanLiteralExpr n, Object arg) {
+			// TODO Auto-generated method stub
+			super.visit(n, arg);
+		}
+
+		@Override
+		public void visit(CastExpr n, Object arg) {
+			// TODO Auto-generated method stub
+			super.visit(n, arg);
+		}
+
+		@Override
+		public void visit(CatchClause n, Object arg) {
+			// TODO Auto-generated method stub
+			super.visit(n, arg);
+		}
+
+		@Override
+		public void visit(CharLiteralExpr n, Object arg) {
+			// TODO Auto-generated method stub
+			super.visit(n, arg);
+		}
+
+		@Override
+		public void visit(ClassExpr n, Object arg) {
+			// TODO Auto-generated method stub
+			super.visit(n, arg);
+		}
+
+		@Override
+		public void visit(ClassOrInterfaceDeclaration n, Object arg) {
+			// TODO Auto-generated method stub
+			super.visit(n, arg);
+		}
+
+		@Override
+		public void visit(ClassOrInterfaceType n, Object arg) {
+			// TODO Auto-generated method stub
+			super.visit(n, arg);
+		}
+
+		@Override
+		public void visit(CompilationUnit n, Object arg) {
+			// TODO Auto-generated method stub
+			super.visit(n, arg);
+		}
+
+		@Override
+		public void visit(ConditionalExpr n, Object arg) {
+			// TODO Auto-generated method stub
+			super.visit(n, arg);
+		}
+
+		@Override
+		public void visit(ConstructorDeclaration n, Object arg) {
+			// TODO Auto-generated method stub
+			super.visit(n, arg);
+		}
+
+		@Override
+		public void visit(ContinueStmt n, Object arg) {
+			// TODO Auto-generated method stub
+			super.visit(n, arg);
+		}
+
+		@Override
+		public void visit(DoStmt n, Object arg) {
+			// TODO Auto-generated method stub
+			super.visit(n, arg);
+		}
+
+		@Override
+		public void visit(DoubleLiteralExpr n, Object arg) {
+			// TODO Auto-generated method stub
+			super.visit(n, arg);
+		}
+
+		@Override
+		public void visit(EmptyMemberDeclaration n, Object arg) {
+			// TODO Auto-generated method stub
+			super.visit(n, arg);
+		}
+
+		@Override
+		public void visit(EmptyStmt n, Object arg) {
+			// TODO Auto-generated method stub
+			super.visit(n, arg);
+		}
+
+		@Override
+		public void visit(EmptyTypeDeclaration n, Object arg) {
+			// TODO Auto-generated method stub
+			super.visit(n, arg);
+		}
+
+		@Override
+		public void visit(EnclosedExpr n, Object arg) {
+			// TODO Auto-generated method stub
+			super.visit(n, arg);
+		}
+
+		@Override
+		public void visit(EnumConstantDeclaration n, Object arg) {
+			// TODO Auto-generated method stub
+			super.visit(n, arg);
+		}
+
+		@Override
+		public void visit(EnumDeclaration n, Object arg) {
+			// TODO Auto-generated method stub
+			super.visit(n, arg);
+		}
+
+		@Override
+		public void visit(ExplicitConstructorInvocationStmt n, Object arg) {
+			// TODO Auto-generated method stub
+			super.visit(n, arg);
+		}
+
+		@Override
+		public void visit(ExpressionStmt n, Object arg) {
+			// TODO Auto-generated method stub
+			super.visit(n, arg);
+		}
+
+		@Override
+		public void visit(FieldAccessExpr n, Object arg) {
+			// TODO Auto-generated method stub
+			super.visit(n, arg);
+		}
+
+		@Override
+		public void visit(FieldDeclaration n, Object arg) {
+			// TODO Auto-generated method stub
+			super.visit(n, arg);
+		}
+
+		@Override
+		public void visit(ImportDeclaration n, Object arg) {
+			// TODO Auto-generated method stub
+			super.visit(n, arg);
+		}
+
+		@Override
+		public void visit(InitializerDeclaration n, Object arg) {
+			// TODO Auto-generated method stub
+			super.visit(n, arg);
+		}
+
+		@Override
+		public void visit(InstanceOfExpr n, Object arg) {
+			// TODO Auto-generated method stub
+			super.visit(n, arg);
+		}
+
+		@Override
+		public void visit(IntegerLiteralExpr n, Object arg) {
+			// TODO Auto-generated method stub
+			super.visit(n, arg);
+		}
+
+		@Override
+		public void visit(IntegerLiteralMinValueExpr n, Object arg) {
+			// TODO Auto-generated method stub
+			super.visit(n, arg);
+		}
+
+		@Override
+		public void visit(JavadocComment n, Object arg) {
+			// TODO Auto-generated method stub
+			super.visit(n, arg);
+		}
+
+		@Override
+		public void visit(LabeledStmt n, Object arg) {
+			// TODO Auto-generated method stub
+			super.visit(n, arg);
+		}
+
+		@Override
+		public void visit(LineComment n, Object arg) {
+			// TODO Auto-generated method stub
+			super.visit(n, arg);
+		}
+
+		@Override
+		public void visit(LongLiteralExpr n, Object arg) {
+			// TODO Auto-generated method stub
+			super.visit(n, arg);
+		}
+
+		@Override
+		public void visit(LongLiteralMinValueExpr n, Object arg) {
+			// TODO Auto-generated method stub
+			super.visit(n, arg);
+		}
+
+		@Override
+		public void visit(MarkerAnnotationExpr n, Object arg) {
+			// TODO Auto-generated method stub
+			super.visit(n, arg);
+		}
+
+		@Override
+		public void visit(MemberValuePair n, Object arg) {
+			// TODO Auto-generated method stub
+			super.visit(n, arg);
+		}
+
+		@Override
+		public void visit(MethodDeclaration n, Object arg) {
+			// TODO Auto-generated method stub
+			super.visit(n, arg);
+		}
+
+		@Override
+		public void visit(NameExpr n, Object arg) {
+			// TODO Auto-generated method stub
+			super.visit(n, arg);
+		}
+
+		@Override
+		public void visit(NormalAnnotationExpr n, Object arg) {
+			// TODO Auto-generated method stub
+			super.visit(n, arg);
+		}
+
+		@Override
+		public void visit(NullLiteralExpr n, Object arg) {
+			// TODO Auto-generated method stub
+			super.visit(n, arg);
+		}
+
+		@Override
+		public void visit(ObjectCreationExpr n, Object arg) {
+			// TODO Auto-generated method stub
+			super.visit(n, arg);
+		}
+
+		@Override
+		public void visit(PackageDeclaration n, Object arg) {
+			// TODO Auto-generated method stub
+			super.visit(n, arg);
+		}
+
+		@Override
+		public void visit(Parameter n, Object arg) {
+			// TODO Auto-generated method stub
+			super.visit(n, arg);
+		}
+
+		@Override
+		public void visit(PrimitiveType n, Object arg) {
+			// TODO Auto-generated method stub
+			super.visit(n, arg);
+		}
+
+		@Override
+		public void visit(QualifiedNameExpr n, Object arg) {
+			// TODO Auto-generated method stub
+			super.visit(n, arg);
+		}
+
+		@Override
+		public void visit(ReferenceType n, Object arg) {
+			// TODO Auto-generated method stub
+			super.visit(n, arg);
+		}
+
+		@Override
+		public void visit(SingleMemberAnnotationExpr n, Object arg) {
+			// TODO Auto-generated method stub
+			super.visit(n, arg);
+		}
+
+		@Override
+		public void visit(StringLiteralExpr n, Object arg) {
+			// TODO Auto-generated method stub
+			super.visit(n, arg);
+		}
+
+		@Override
+		public void visit(SuperExpr n, Object arg) {
+			// TODO Auto-generated method stub
+			super.visit(n, arg);
+		}
+
+		@Override
+		public void visit(SynchronizedStmt n, Object arg) {
+			// TODO Auto-generated method stub
+			super.visit(n, arg);
+		}
+
+		@Override
+		public void visit(ThisExpr n, Object arg) {
+			// TODO Auto-generated method stub
+			super.visit(n, arg);
+		}
+
+		@Override
+		public void visit(ThrowStmt n, Object arg) {
+			// TODO Auto-generated method stub
+			super.visit(n, arg);
+		}
+
+		@Override
+		public void visit(TryStmt n, Object arg) {
+			// TODO Auto-generated method stub
+			super.visit(n, arg);
+		}
+
+		@Override
+		public void visit(TypeDeclarationStmt n, Object arg) {
+			// TODO Auto-generated method stub
+			super.visit(n, arg);
+		}
+
+		@Override
+		public void visit(TypeParameter n, Object arg) {
+			// TODO Auto-generated method stub
+			super.visit(n, arg);
+		}
+
+		@Override
+		public void visit(UnaryExpr n, Object arg) {
+			// TODO Auto-generated method stub
+			super.visit(n, arg);
+		}
+
+		@Override
+		public void visit(VariableDeclarationExpr n, Object arg) {
+        	graph.addNode("Variable Declaration");
+        	if(lastnode > -1){
+        		graph.addEdge(lastnode, graph.getNodeCount()-1);
+        	}
+        	lastnode = graph.getNodeCount()-1;
+		}
+
+		@Override
+		public void visit(VariableDeclarator n, Object arg) {
+			// TODO Auto-generated method stub
+			super.visit(n, arg);
+		}
+
+		@Override
+		public void visit(VariableDeclaratorId n, Object arg) {
+			// TODO Auto-generated method stub
+			super.visit(n, arg);
+		}
+
+		@Override
+		public void visit(VoidType n, Object arg) {
+			// TODO Auto-generated method stub
+			super.visit(n, arg);
+		}
+
+		@Override
+		public void visit(WhileStmt n, Object arg) {
+			// TODO Auto-generated method stub
+			super.visit(n, arg);
+		}
+
+		@Override
+		public void visit(WildcardType n, Object arg) {
+			// TODO Auto-generated method stub
+			super.visit(n, arg);
+		}
+    }
 }

@@ -1,11 +1,12 @@
 package engine;
 
-import java.lang.reflect.Method;
-
-import Milestone1_Runner.Student;
+import java.io.IOException;
 
 public interface MethodCode {
-	Student getAuthor();
-	Method getMethod();
-	String getBody();
+	public String getAccessType() throws IOException;
+	public String getReturnClass();
+	public String getName();
+	public String[] getParameterClasses();
+	public String getBody();
+	public String toString();
 }
