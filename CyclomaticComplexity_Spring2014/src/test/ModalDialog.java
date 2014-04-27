@@ -2,18 +2,21 @@
 //with modifications for jPanel
 package test;
 
+import inputOutput.GraphView;
+
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 public class ModalDialog extends JDialog implements ActionListener {
-  public ModalDialog(JPanel parent, String title, String message) {
+  public ModalDialog(GraphView parent, String title, String message) {
     super();
     if (parent != null) {
       Dimension parentSize = parent.getSize(); 
@@ -38,6 +41,6 @@ public class ModalDialog extends JDialog implements ActionListener {
     dispose(); 
   }
   public static void main(String[] a) {
-    ModalDialog dlg = new ModalDialog(new JPanel(), "title", "message");
+    ModalDialog dlg = new ModalDialog(new GraphView(), "title", "message");
   }
 }
