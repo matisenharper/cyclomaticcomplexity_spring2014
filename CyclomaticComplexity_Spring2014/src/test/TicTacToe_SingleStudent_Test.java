@@ -8,20 +8,15 @@ import inputOutput.GraphView;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-import javax.swing.JPanel;
-
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 //import org.junit.After;
 
-import org.junit.runner.RunWith;
-
 import tictactoe.Mark;
 import tictactoe.TicTacToeBoard;
-import tictactoe.TicTacToeBoardImpl_Student;
+import tictactoe.TicTacToeBoardImpl_Hoffpauir;
 
-@RunWith(CC_TestSuite.class)
 public class TicTacToe_SingleStudent_Test {
 	
 	private TicTacToeBoard ticTacToeBoard_STUDENT;
@@ -37,7 +32,7 @@ public class TicTacToe_SingleStudent_Test {
 	ModalDialog dlg = new ModalDialog(new GraphView(), "Student", "message");
 	}
 	@Before public void setUp() {
-		ticTacToeBoard_STUDENT = new TicTacToeBoardImpl_Student();
+		ticTacToeBoard_STUDENT = new TicTacToeBoardImpl_Hoffpauir();
 	}
 	@CyclomaticComplexity
 	@AfterClass

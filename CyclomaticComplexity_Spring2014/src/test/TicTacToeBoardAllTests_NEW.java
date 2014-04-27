@@ -1,6 +1,8 @@
 package test;
 
 
+import static org.junit.Assert.assertEquals;
+
 import java.io.FileNotFoundException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -10,7 +12,6 @@ import java.util.List;
 import java.util.Set;
 
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -24,16 +25,12 @@ import org.junit.runner.Description;
 import org.junit.runner.RunWith;
 
 import test.Parameterized_Kart.Parameters;
+import test.TicTacToe_SingleStudent_Test.Points;
+import tictactoe.Mark;
 import tictactoe.TicTacToeBoard;
 import tictactoe.TicTacToeBoardImpl_Kart;
 import tictactoe.TicTacToeBoardUtils;
 import MISC.Student;
-
-import inputOutput.GraphView;
-
-
-
-
 
 @RunWith(Parameterized_Kart.class)
 public class TicTacToeBoardAllTests_NEW {
@@ -48,7 +45,7 @@ public class TicTacToeBoardAllTests_NEW {
 	private Student student;
 	private Class studentImplClass;
 	private TicTacToeBoard ticTacToeBoard_STUDENT;
-	private TicTacToeBoard ticTacToeBoard_GOLD_STANDARD;
+	
 
 	//	protected static List<String> problemKeyList = null;
 	//	protected static Map<Object, Integer> problemKeyToPointValueMap = null;
@@ -106,7 +103,7 @@ public class TicTacToeBoardAllTests_NEW {
 		return new TicTacToeBoardImpl_Kart();
 	}
 
-	@Parameters 
+	@Parameters //gets all students
 	public static List<Object[]> parameterList() {
 		List<Object[]> parameterList = new ArrayList<Object[]>();
 		for(Student student : Spring2014Users.Student.values())
@@ -120,7 +117,7 @@ public class TicTacToeBoardAllTests_NEW {
 	public static void beforeAllStudents()
 	{
 	}
-
+	@CyclomaticComplexity
 	@AfterClass		//after *all* students
 	public static void afterAllStudents() throws FileNotFoundException
 	{
@@ -155,6 +152,7 @@ public class TicTacToeBoardAllTests_NEW {
 
 		@Override
 		protected void succeeded(Description description) {
+			
 			testSucceeded = true;
 		}
 
@@ -170,54 +168,124 @@ public class TicTacToeBoardAllTests_NEW {
 	/**********************************************************************************************************************/	
 	private void runTest(int[] movesArray, String messagePrefix)
 	{
-		GOLD_STANDARD_MESSAGE = messagePrefix;
-	
-		for(int i = 0; i < movesArray.length; i++)
+		TicTacToeBoard ticTacToeBoard_STUDENT;
+	}
+	@Points(value=5)
+	@Test public void emptyBoardTest()
+	{
+		for(int i = 0; i < TicTacToeBoard.ROW_COUNT; i++)
 		{
-			int gridIndex = movesArray[i];
-			int row = TicTacToeBoardUtils.getRow(gridIndex);
-			int column = TicTacToeBoardUtils.getColumn(gridIndex);
-			ticTacToeBoard_GOLD_STANDARD.setMark(row, column);
-			GOLD_STANDARD_MESSAGE = messagePrefix + "\n" + "Sub-test: " + ticTacToeBoard_GOLD_STANDARD;
-			ticTacToeBoard_STUDENT.setMark(row, column);
-			
+			for(int j = 0; j < TicTacToeBoard.COLUMN_COUNT; j++)
+			{
+				assertEquals(null, ticTacToeBoard_STUDENT.getMark(i, j));
+			}
 		}
-		GOLD_STANDARD_MESSAGE = messagePrefix;
+		assertEquals(Mark.X, ticTacToeBoard_STUDENT.getTurn());
+		assertEquals(false, ticTacToeBoard_STUDENT.isGameOver());
 	}
+	@Points(value=5)
+	@Test public void oneSymbolTest()
+	{		
+		final int ROW = 0; 
+		final int COLUMN = 2;
+		final Mark MARK = Mark.X;
 
-	@Test
-	public void cyclomaticComplexityJDialogExample()
-	{
-		System.out.println("start of jdialog with jpanel for "+student);
-		ModalDialog dlg = new ModalDialog(new GraphView(), "title", "Hebah's GUI/Cyclomatic Complexity View");
-		System.out.println("End of jdialog with jpanel "+student);
+		ticTacToeBoard_STUDENT.setMark(ROW, COLUMN);
+
+		for(int i = 0; i < TicTacToeBoard.ROW_COUNT; i++)
+		{
+			for(int j = 0; j < TicTacToeBoard.COLUMN_COUNT; j++)
+			{
+				if(i == ROW && j == COLUMN)
+				{
+					assertEquals(MARK, ticTacToeBoard_STUDENT.getMark(i, j));
+				}
+				else
+				{
+					assertEquals(null, ticTacToeBoard_STUDENT.getMark(i, j));
+				}
+			}
+		}
+		assertEquals(Mark.O, ticTacToeBoard_STUDENT.getTurn());
+		assertEquals(false, ticTacToeBoard_STUDENT.isGameOver());
 	}
-	
 	@Points(value=5)
 	@Test
-	public void emptyBoardTest()
-	{
-		
-		int[] movesArray = new int[]{};
-		String messagePrefix = "Get all questions correct about the game: " + TicTacToeBoardUtils.toString(movesArray);
-		runTest(movesArray, messagePrefix);	
-	}
-
-	@Points(value=5)
-	@Test(timeout=3000)
-	public void oneSymbolTest()
-	{	
-		int[] movesArray = new int[]{2};
-		String messagePrefix = "Get all questions correct about the game: " + TicTacToeBoardUtils.toString(movesArray);
-		runTest(movesArray, messagePrefix);
-	}	
-
-	@Points(value=5)
-	@Test(timeout=3000)
 	public void twoSymbolTest()
 	{
-		int[] movesArray = new int[]{4,8};
-		String messagePrefix = "Get all questions correct about the game: " + TicTacToeBoardUtils.toString(movesArray);
-		runTest(movesArray, messagePrefix);
+		final int ROW1 = 1;
+		final int COLUMN1 = 2;
+		Mark MARK1 = Mark.X;
+		ticTacToeBoard_STUDENT.setMark(ROW1, COLUMN1);
+
+		final int ROW2 = 1;
+		final int COLUMN2 = 1;
+		Mark MARK2 = Mark.O;
+		ticTacToeBoard_STUDENT.setMark(ROW2, COLUMN2);
+
+		for(int i = 0; i < TicTacToeBoard.ROW_COUNT; i++)
+		{
+			for(int j = 0; j < TicTacToeBoard.COLUMN_COUNT; j++)
+			{
+				if(i == ROW1 && j == COLUMN1)
+				{
+					assertEquals(MARK1, ticTacToeBoard_STUDENT.getMark(i, j));
+				}
+				else if(i == ROW2 && j == COLUMN2)
+				{
+					assertEquals(MARK2, ticTacToeBoard_STUDENT.getMark(i, j));
+				}
+				else
+				{
+					assertEquals(null, ticTacToeBoard_STUDENT.getMark(i, j));
+				}
+			}
+		}
+		assertEquals(Mark.X, ticTacToeBoard_STUDENT.getTurn());
+		assertEquals(false, ticTacToeBoard_STUDENT.isGameOver());
+	}
+	@Points(value=5)
+	@Test(expected=AssertionError.class)
+	public void setMark_OutOfRange()
+	{
+		final int ROW1 = 4;
+		final int COLUMN1 = 4;
+		ticTacToeBoard_STUDENT.setMark(ROW1, COLUMN1);
+	}
+	@Points(value=5)
+	@Test public void earlyWinnerTest()
+	{
+		int row, column;
+
+		row = 1; column = 0;
+		ticTacToeBoard_STUDENT.setMark(row, column);
+
+		row = 2; column = 2;
+		ticTacToeBoard_STUDENT.setMark(row, column);
+
+		row = 1; column = 1;
+		ticTacToeBoard_STUDENT.setMark(row, column);
+
+		row = 2; column = 1;
+		ticTacToeBoard_STUDENT.setMark(row, column);
+
+		row = 1; column = 2;
+		ticTacToeBoard_STUDENT.setMark(row, column);
 		
-	}}
+		assertEquals(null, ticTacToeBoard_STUDENT.getTurn());
+		assertEquals(true, ticTacToeBoard_STUDENT.isGameOver());
+		assertEquals(Mark.X, ticTacToeBoard_STUDENT.getWinner());
+	}
+	@Before
+	public void initBeforeEachTestMethod()
+	{
+		System.out.println("BEFORE : student = " + student);
+		ticTacToeBoard_STUDENT = getStudentTicTacToeBoard(student);
+	}
+
+	@After
+	public void cleanUpAfterEachTestMethod()
+	{
+		System.out.println("AFTER : student = " + student);	
+	}
+}
