@@ -14,9 +14,6 @@ import java.util.List;
 
 import javax.swing.JPanel;
 
-
-
-
 import org.junit.Ignore;
 import org.junit.internal.AssumptionViolatedException;
 import org.junit.internal.runners.model.EachTestNotifier;
@@ -48,7 +45,6 @@ public class CC_TestSuite extends Suite {
 	{
 	}
 
-	
 	private class TestClassRunnerForParameters extends BlockJUnit4ClassRunner 
 	{
 		private final Object displayObject;
@@ -83,41 +79,34 @@ public class CC_TestSuite extends Suite {
 			}
 			afterAllTests();
 		}
-		
+	//	@CyclomaticComplexity
 		private void afterAllTests()
 		{
-			ModalDialog dlg = new ModalDialog(new JPanel(), "title", "cyclomatic complexity statistic for single student");
 			System.out.println("AFTER ALL TESTS FOR SINGLE STUDENT");
 			//throw new RuntimeException("afterAllTests()");
 		}
-
 		@Override
 		public Object createTest() throws Exception {
-			return getTestClass().getOnlyConstructor().newInstance(parameterList);
+			return getTestClass().getOnlyConstructor().newInstance(parameterList);//gathers parameterized methods for point calculation
 		}
-
 		@Override
 		protected String getName() {
 			return String.format("[%s]", displayObject);
 		}
-
 		@Override
 		protected String testName(final FrameworkMethod method) {
-			return String.format("%s[%s]", method.getName(), displayObject);
-			//return String.format("%s[%s]<%s>", method.getName(), displayObject, currentTestPointsEarnedString);
+			//return String.format("%s[%s]", method.getName(), displayObject);
+			return String.format("%s[%s]<%s>", method.getName(), displayObject, currentTestPointsEarnedString);
 		}
-
 		@Override
 		protected void validateConstructor(List<Throwable> errors) {
 			validateOnlyOneConstructor(errors);
 		}
-
 		@Override
 		protected Statement classBlock(RunNotifier notifier) {
 			return childrenInvoker(notifier);
 		}
 	}
-
 	private final ArrayList<Runner> runners= new ArrayList<Runner>();
 
 	/**
@@ -131,9 +120,9 @@ public class CC_TestSuite extends Suite {
 			assert parametersList.size() > i : "parametersList.size() = " + parametersList.size() + " <= " + i + " = i!";
 			assert parametersList.get(i).length > 0 : "parametersList.get(" + i + ").length = " + parametersList.get(i).length + " <= 0!";
 			runners.add(new TestClassRunnerForParameters(getTestClass().getJavaClass(), parametersList.get(i), parametersList.get(i)[0]));
+			System.out.println(runners);
 		}
 	}
-	
 	@Override
 	public void run(final RunNotifier notifier) {
 		System.out.println("CC_TestSuite.run()");
@@ -151,34 +140,31 @@ public class CC_TestSuite extends Suite {
 		}
 		afterAllTests();
 	}
-	
+//@CyclomaticComplexityAllStudents
 	private void afterAllTests()
 	{
-		ModalDialog dlg = new ModalDialog(new JPanel(), "title", "cyclomatic complexity statistic all students");
 		System.out.println("AFTER ALL TESTS FOR ALL STUDENTS");
 		//throw new RuntimeException("afterAllTests()");
 	}
 
 	@Override
 	protected List<Runner> getChildren() {
+		System.out.println("protected List<Runner> getChildren(): "+runners);
 		return runners;
 	}
-
 	@SuppressWarnings("unchecked")
 	private List<Object[]> getParametersList(TestClass klass)
 	throws Throwable {
 		return (List<Object[]>) getParametersMethod(klass).invokeExplosively(null);
 	}
-
 	private FrameworkMethod getParametersMethod(TestClass testClass)
 	throws Exception {
-		List<FrameworkMethod> methods= testClass.getAnnotatedMethods(Parameters.class);
+		List<FrameworkMethod> methods= testClass.getAnnotatedMethods(Parameters.class);//catches @parameters
 		for (FrameworkMethod each : methods) {
 			int modifiers= each.getMethod().getModifiers();
-			if (Modifier.isStatic(modifiers) && Modifier.isPublic(modifiers))
+			if (Modifier.isStatic(modifiers) && Modifier.isPublic(modifiers))//
 				return each;
 		}
-
 		throw new Exception("No public static parameters method on class " + testClass.getName());
 	}
 }
