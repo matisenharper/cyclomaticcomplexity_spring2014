@@ -125,11 +125,13 @@ public class GraphEngineImpl implements GraphEngine{
     	private int lastnode;
     	private ArrayList<Integer> alternatelastnodes;
     	private ArrayList<Integer> alternatebreaknodes;
+    	private ArrayList<Integer> alternatereturnnodes;
     	
     	public StatementParser(int ln){
     		lastnode = ln;
     		alternatelastnodes = new ArrayList<Integer>();
     		alternatebreaknodes = new ArrayList<Integer>();
+    		alternatereturnnodes = new ArrayList<Integer>();
     	}
     	
     	public void addEndNode() {
@@ -138,7 +140,13 @@ public class GraphEngineImpl implements GraphEngine{
         		graph.addEdge(aln, graph.getNodeCount()-1);
     		}
 			this.clearAlternateLastnodes();
-        	if(lastnode > -1){
+        	
+			for(int arn:this.getAlternateReturnnodes()){
+				graph.addEdge(arn, graph.getNodeCount()-1);
+    		}
+			this.clearAlternateReturnnodes();
+        	
+			if(lastnode > -1 && !this.getAlternateLastnodes().contains(lastnode)){
         		graph.addEdge(lastnode, graph.getNodeCount()-1);
         	}
 			lastnode = graph.getNodeCount()-1;
@@ -183,6 +191,20 @@ public class GraphEngineImpl implements GraphEngine{
 			alternatebreaknodes.clear();
 		}
 		
+		public ArrayList<Integer> getAlternateReturnnodes() {
+			return alternatereturnnodes;
+		}
+		
+		public void addAlternateReturnnodes(int aln) {
+			if(!alternatereturnnodes.contains(aln))
+				alternatereturnnodes.add(aln);
+			System.out.println(alternatereturnnodes);
+		}
+		
+		public void clearAlternateReturnnodes() {
+			alternatereturnnodes.clear();
+		}
+		
 		private void visit(Statement stmt, Object arg) {
 			stmt.accept(this, arg);
 		}
@@ -190,47 +212,52 @@ public class GraphEngineImpl implements GraphEngine{
 		@Override
 		public void visit(AssignExpr n, Object arg) {
 			graph.addNode("Assign Expresion");
+			if(lastnode > -1 && !this.getAlternateLastnodes().contains(lastnode)){
+        		graph.addEdge(lastnode, graph.getNodeCount()-1);
+        	}
 			for(int aln:this.getAlternateLastnodes()){
         		graph.addEdge(aln, graph.getNodeCount()-1);
     		}
 			this.clearAlternateLastnodes();
-        	if(lastnode > -1 && !this.getAlternateLastnodes().contains(lastnode)){
-        		graph.addEdge(lastnode, graph.getNodeCount()-1);
-        	}
 			lastnode = graph.getNodeCount()-1;
 		}
 		
 		@Override
 		public void visit(BreakStmt n, Object arg) {
 			graph.addNode("Break");
+			if(lastnode > -1 && !this.getAlternateLastnodes().contains(lastnode)){
+        		graph.addEdge(lastnode, graph.getNodeCount()-1);
+        	}
 			for(int aln:this.getAlternateLastnodes()){
         		graph.addEdge(aln, graph.getNodeCount()-1);
     		}
 			this.clearAlternateLastnodes();
-        	if(lastnode > -1 && !this.getAlternateLastnodes().contains(lastnode)){
-        		graph.addEdge(lastnode, graph.getNodeCount()-1);
-        	}
-			lastnode = -1;
+        	lastnode = -1;
 			this.addAlternateBreaknodes(graph.getNodeCount()-1);
 		}
 
 		@Override
 		public void visit(ForeachStmt n, Object arg) {
 			graph.addNode("ForEach");
-			int forstart = graph.getNodeCount()-1;
-			int forend = -1;
+			int start = graph.getNodeCount()-1;
+			int end = -1;
 			StatementParser parser;
         	
         	if(lastnode > -1 && !this.getAlternateLastnodes().contains(lastnode)){
-        		graph.addEdge(lastnode, forstart);
+        		graph.addEdge(lastnode, start);
         	}
         	
-        	lastnode = graph.getNodeCount()-1;
+        	for(int aln:this.getAlternateLastnodes()){
+        		graph.addEdge(aln, start);
+    		}
+        	this.clearAlternateLastnodes();
+    		
+    		lastnode = graph.getNodeCount()-1;
         	
         	if(n.getBody() != null){
-        		parser = new StatementParser(forstart);
+        		parser = new StatementParser(start);
                 parser.visit(n.getBody(), null);
-                forend = parser.getLastnode();
+                end = parser.getLastnode();
                 
                 for(int abn:parser.getAlternateBreaknodes()){
         			this.addAlternateBreaknodes(abn);
@@ -239,6 +266,10 @@ public class GraphEngineImpl implements GraphEngine{
         		for(int aln:parser.getAlternateLastnodes()){
         			this.addAlternateLastnodes(aln);
         		}
+        		
+        		for(int arn:parser.getAlternateReturnnodes()){
+        			this.addAlternateReturnnodes(arn);
+        		}
         	}
         	
         	for(int abn:this.getAlternateBreaknodes()){
@@ -246,31 +277,36 @@ public class GraphEngineImpl implements GraphEngine{
     		}
         	this.clearAlternateBreaknodes();
         	
-        	if(forend > -1 && forend != lastnode){
-        		lastnode = forend;
+        	if(end > -1 && end != lastnode){
+        		lastnode = end;
         	}
-        	if(lastnode != forstart){
-        		this.addAlternateLastnodes(forstart);
+        	if(lastnode != start){
+        		this.addAlternateLastnodes(start);
         	}
 		}
 
 		@Override
 		public void visit(ForStmt n, Object arg) {
 			graph.addNode("For");
-			int forstart = graph.getNodeCount()-1;
-			int forend = -1;
+			int start = graph.getNodeCount()-1;
+			int end = -1;
 			StatementParser parser;
         	
         	if(lastnode > -1 && !this.getAlternateLastnodes().contains(lastnode)){
-        		graph.addEdge(lastnode, forstart);
+        		graph.addEdge(lastnode, start);
         	}
         	
-        	lastnode = graph.getNodeCount()-1;
+        	for(int aln:this.getAlternateLastnodes()){
+        		graph.addEdge(aln, start);
+    		}
+        	this.clearAlternateLastnodes();
+    		
+    		lastnode = graph.getNodeCount()-1;
         	
         	if(n.getBody() != null){
-        		parser = new StatementParser(forstart);
+        		parser = new StatementParser(start);
                 parser.visit(n.getBody(), null);
-                forend = parser.getLastnode();
+                end = parser.getLastnode();
                 
                 for(int abn:parser.getAlternateBreaknodes()){
         			this.addAlternateBreaknodes(abn);
@@ -279,6 +315,10 @@ public class GraphEngineImpl implements GraphEngine{
         		for(int aln:parser.getAlternateLastnodes()){
         			this.addAlternateLastnodes(aln);
         		}
+        		
+        		for(int arn:parser.getAlternateReturnnodes()){
+        			this.addAlternateReturnnodes(arn);
+        		}
         	}
         	
         	for(int abn:this.getAlternateBreaknodes()){
@@ -286,11 +326,11 @@ public class GraphEngineImpl implements GraphEngine{
     		}
         	this.clearAlternateBreaknodes();
         	
-        	if(forend > -1 && forend != lastnode){
-        		lastnode = forend;
+        	if(end > -1 && end != lastnode){
+        		lastnode = end;
         	}
-        	if(lastnode != forstart){
-        		this.addAlternateLastnodes(forstart);
+        	if(lastnode != start){
+        		this.addAlternateLastnodes(start);
         	}
 		}
 
@@ -327,6 +367,10 @@ public class GraphEngineImpl implements GraphEngine{
         		for(int aln:parser.getAlternateLastnodes()){
         			this.addAlternateLastnodes(aln);
         		}
+        		
+        		for(int arn:parser.getAlternateReturnnodes()){
+        			this.addAlternateReturnnodes(arn);
+        		}
         	}
         	if(n.getElseStmt() != null){
         		parser = new StatementParser(ifstart);
@@ -342,6 +386,10 @@ public class GraphEngineImpl implements GraphEngine{
         		for(int aln:parser.getAlternateLastnodes()){
         			this.addAlternateLastnodes(aln);
         		}
+        		
+        		for(int arn:parser.getAlternateReturnnodes()){
+        			this.addAlternateReturnnodes(arn);
+        		}
         	}
         	
         	if(ifend > -1){
@@ -355,46 +403,145 @@ public class GraphEngineImpl implements GraphEngine{
 		@Override
 		public void visit(MethodCallExpr n, Object arg) {
 			graph.addNode("Method Call");
+			if(lastnode > -1 && !this.getAlternateLastnodes().contains(lastnode)){
+        		graph.addEdge(lastnode, graph.getNodeCount()-1);
+        	}
 			for(int aln:this.getAlternateLastnodes()){
         		graph.addEdge(aln, graph.getNodeCount()-1);
     		}
 			this.clearAlternateLastnodes();
-			if(lastnode > -1 && !this.getAlternateLastnodes().contains(lastnode)){
-        		graph.addEdge(lastnode, graph.getNodeCount()-1);
-        	}
 			lastnode = graph.getNodeCount()-1;
 		}
 		
 		@Override
 		public void visit(ReturnStmt n, Object arg) {
 			graph.addNode("Return");
+			if(lastnode > -1 && !this.getAlternateLastnodes().contains(lastnode)){
+        		graph.addEdge(lastnode, graph.getNodeCount()-1);
+        	}
 			for(int aln:this.getAlternateLastnodes()){
         		graph.addEdge(aln, graph.getNodeCount()-1);
     		}
 			this.clearAlternateLastnodes();
-			if(lastnode > -1 && !this.getAlternateLastnodes().contains(lastnode)){
-        		graph.addEdge(lastnode, graph.getNodeCount()-1);
-        	}
+			this.addAlternateReturnnodes(graph.getNodeCount()-1);
 			lastnode = -1;
 		}
 		
 		@Override
 		public void visit(SwitchEntryStmt n, Object arg) {
-			// TODO Auto-generated method stub
 			super.visit(n, arg);
 		}
 
 		@Override
 		public void visit(SwitchStmt n, Object arg) {
+			graph.addNode("Switch");
+			int start = graph.getNodeCount()-1;
+			int end = -1;
+			StatementParser parser;
 			List<SwitchEntryStmt> cases = n.getEntries();
-			int endswitch[] = new int[cases.size()];
 			
-			for(SwitchEntryStmt s:cases){
-				System.out.println();
-				for(Statement r:s.getStmts()){
-					System.out.println(r.toString());
-				}
-			}
+        	if(lastnode > -1 && !this.getAlternateLastnodes().contains(lastnode)){
+        		graph.addEdge(lastnode, start);
+        	}
+        	
+        	lastnode = graph.getNodeCount()-1;
+        	
+        	for(SwitchEntryStmt s:cases){
+        		parser = new StatementParser(start);
+        		if(end > -1 && end != lastnode){
+            		parser.addAlternateLastnodes(end);
+            	}
+            	parser.visit(s, null);
+                
+            	end = parser.getLastnode();
+                
+                for(int abn:parser.getAlternateBreaknodes()){
+        			this.addAlternateBreaknodes(abn);
+        		}
+        		
+        		for(int aln:parser.getAlternateLastnodes()){
+        			this.addAlternateLastnodes(aln);
+        		}
+        		
+        		for(int arn:parser.getAlternateReturnnodes()){
+        			this.addAlternateReturnnodes(arn);
+        		}
+        		
+        		if(s.getLabel()==null){
+        			lastnode = end;
+        		}
+        	}
+        	
+        	if(end!=-1){
+        		this.addAlternateLastnodes(end);
+        	}
+        	
+        	for(int abn:this.getAlternateBreaknodes()){
+    			this.addAlternateLastnodes(abn);
+    		}
+        	this.clearAlternateBreaknodes();
+		}
+		
+		@Override
+		public void visit(VariableDeclarationExpr n, Object arg) {
+			graph.addNode("Variable Declaration");
+			if(lastnode > -1 && !this.getAlternateLastnodes().contains(lastnode)){
+        		graph.addEdge(lastnode, graph.getNodeCount()-1);
+        	}
+			for(int aln:this.getAlternateLastnodes()){
+        		graph.addEdge(aln, graph.getNodeCount()-1);
+    		}
+			this.clearAlternateLastnodes();
+			lastnode = graph.getNodeCount()-1;
+		}
+		
+		@Override
+		public void visit(WhileStmt n, Object arg) {
+			graph.addNode("While");
+			int start = graph.getNodeCount()-1;
+			int end = -1;
+			StatementParser parser;
+        	
+        	if(lastnode > -1 && !this.getAlternateLastnodes().contains(lastnode)){
+        		graph.addEdge(lastnode, start);
+        	}
+        	
+        	for(int aln:this.getAlternateLastnodes()){
+        		graph.addEdge(aln, start);
+    		}
+        	this.clearAlternateLastnodes();
+    		
+    		lastnode = graph.getNodeCount()-1;
+        	
+        	if(n.getBody() != null){
+        		parser = new StatementParser(start);
+                parser.visit(n.getBody(), null);
+                end = parser.getLastnode();
+                
+                for(int abn:parser.getAlternateBreaknodes()){
+        			this.addAlternateBreaknodes(abn);
+        		}
+        		
+        		for(int aln:parser.getAlternateLastnodes()){
+        			this.addAlternateLastnodes(aln);
+        		}
+        		
+        		for(int arn:parser.getAlternateReturnnodes()){
+        			this.addAlternateReturnnodes(arn);
+        		}
+        	}
+        	
+        	for(int abn:this.getAlternateBreaknodes()){
+    			this.addAlternateLastnodes(abn);
+    		}
+        	this.clearAlternateBreaknodes();
+        	
+        	if(end > -1 && end != lastnode){
+        		lastnode = end;
+        	}
+        	if(lastnode != start){
+        		this.addAlternateLastnodes(start);
+        	}
 		}
 		
 		//Not implemented statements
@@ -783,15 +930,6 @@ public class GraphEngineImpl implements GraphEngine{
 		}
 
 		@Override
-		public void visit(VariableDeclarationExpr n, Object arg) {
-        	graph.addNode("Variable Declaration");
-        	if(lastnode > -1){
-        		graph.addEdge(lastnode, graph.getNodeCount()-1);
-        	}
-        	lastnode = graph.getNodeCount()-1;
-		}
-
-		@Override
 		public void visit(VariableDeclarator n, Object arg) {
 			// TODO Auto-generated method stub
 			super.visit(n, arg);
@@ -805,12 +943,6 @@ public class GraphEngineImpl implements GraphEngine{
 
 		@Override
 		public void visit(VoidType n, Object arg) {
-			// TODO Auto-generated method stub
-			super.visit(n, arg);
-		}
-
-		@Override
-		public void visit(WhileStmt n, Object arg) {
 			// TODO Auto-generated method stub
 			super.visit(n, arg);
 		}

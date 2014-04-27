@@ -23,7 +23,6 @@ public class RegexTest {
     public static void main(String[] args){
         
     	File file = new File("./src/regularExpresionTests/Test.java");
-    	MethodCode method = null;
     	
     	GraphEngine g = new GraphEngineImpl();
     	Student author = Spring2014Users.Student.BOB;
