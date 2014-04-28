@@ -5,6 +5,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import static org.junit.Assert.assertEquals;
 import inputOutput.GraphView;
 
+import java.io.File;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
@@ -13,6 +14,10 @@ import org.junit.Before;
 import org.junit.Test;
 //import org.junit.After;
 
+
+
+
+import Spring2014Users.Student;
 import tictactoe.Mark;
 import tictactoe.TicTacToeBoard;
 import tictactoe.TicTacToeBoardImpl_Hoffpauir;
@@ -20,6 +25,9 @@ import tictactoe.TicTacToeBoardImpl_Hoffpauir;
 public class TicTacToe_SingleStudent_Test {
 	
 	private TicTacToeBoard ticTacToeBoard_STUDENT;
+	
+	
+	
 	@Retention(value=RUNTIME)
 	@Target(value=METHOD)
 	public @interface Points {
@@ -29,7 +37,8 @@ public class TicTacToe_SingleStudent_Test {
 	@Retention(value=RUNTIME)
 	@Target(value=METHOD)
 	public @interface CyclomaticComplexity {
-	ModalDialog dlg = new ModalDialog(new GraphView(), "Student", "message");
+	//setData(new File("./src/tictactoe/TicTacToeBoardImpl_Rocha"));
+	//ModalDialog dlg = new ModalDialog(new GraphView(new File("./src/tictactoe/TicTacToeBoardImpl_Rocha"), Student.ROCHA), "Student", "message");
 	}
 	@Before public void setUp() {
 		ticTacToeBoard_STUDENT = new TicTacToeBoardImpl_Hoffpauir();

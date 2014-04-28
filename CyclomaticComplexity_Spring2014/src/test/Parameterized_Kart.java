@@ -2,6 +2,8 @@ package test;
 
 //import jframetest.SortFrame;
 
+import inputOutput.GraphView;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -13,6 +15,7 @@ import java.util.Collections;
 import java.util.List;
 
 import javax.swing.JPanel;
+
 
 
 
@@ -85,7 +88,6 @@ public class Parameterized_Kart extends Suite {
 		
 		private void afterAllTests()
 		{
-			ModalDialog dlg = new ModalDialog(new JPanel(), "title", "cyclomatic complexity statistic for single student");
 			System.out.println("AFTER ALL TESTS FOR SINGLE STUDENT");
 			//throw new RuntimeException("afterAllTests()");
 		}
@@ -155,7 +157,7 @@ public class Parameterized_Kart extends Suite {
 	
 	private void afterAllTests()
 	{
-		ModalDialog dlg = new ModalDialog(new JPanel(), "title", "cyclomatic complexity statistic all students");
+		ModalDialog dlg = new ModalDialog(new GraphView(), "title", "cyclomatic complexity statistic all students");
 		System.out.println("AFTER ALL TESTS FOR ALL STUDENTS");
 		//throw new RuntimeException("afterAllTests()");
 	}
