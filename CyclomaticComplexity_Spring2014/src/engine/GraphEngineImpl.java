@@ -1,7 +1,5 @@
 package engine;
 
-import japa.parser.JavaParser;
-import japa.parser.ParseException;
 import japa.parser.ast.BlockComment;
 import japa.parser.ast.CompilationUnit;
 import japa.parser.ast.ImportDeclaration;
@@ -84,16 +82,8 @@ import japa.parser.ast.type.VoidType;
 import japa.parser.ast.type.WildcardType;
 import japa.parser.ast.visitor.VoidVisitorAdapter;
 
-import java.io.BufferedWriter;
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.EnumSet;
 import java.util.List;
-import java.util.Set;
 
 import cyclomaticComplexity.GraphModel;
 import cyclomaticComplexity.GraphModelImpl;
@@ -108,6 +98,7 @@ public class GraphEngineImpl implements GraphEngine{
 	public GraphModel getGraphModel(MethodData method) {
 		
 		//generateGraphModel(code);
+		StatementParser.initializeGraph(); 
 		StatementParser sp = new StatementParser(StatementParser.getGraph().getNodeCount() - 1);
 		sp.visit(((MethodCodeImpl)method.getMethod()).getBodyBlock(), null);
 		sp.addEndNode();
@@ -171,7 +162,6 @@ public class GraphEngineImpl implements GraphEngine{
 		public void addAlternateLastnodes(int aln) {
 			if(!alternatelastnodes.contains(aln))
 				alternatelastnodes.add(aln);
-			System.out.println(alternatelastnodes);
 		}
 		
 		public void clearAlternateLastnodes() {
@@ -198,7 +188,6 @@ public class GraphEngineImpl implements GraphEngine{
 		public void addAlternateReturnnodes(int aln) {
 			if(!alternatereturnnodes.contains(aln))
 				alternatereturnnodes.add(aln);
-			System.out.println(alternatereturnnodes);
 		}
 		
 		public void clearAlternateReturnnodes() {
