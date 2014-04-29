@@ -1,5 +1,6 @@
 package regularExpresionTests;
 
+import inputOutput.GraphView;
 import inputOutput.ImagePanel;
 import inputOutput.ImageScroller;
 import inputOutput.TextScroller;
@@ -76,12 +77,19 @@ public class RegexTest {
 		gv.writeGraphToFile( gv.getGraph( gv.getDotSource(), type ), out );
 		
 		JFrame frame = new JFrame("Simple GUI"); 
-		ImagePanel img = new ImagePanel(out);
+		/*ImagePanel img = new ImagePanel(out);
 		ImageScroller scroller = new ImageScroller(img);
 		TextScroller scroller2 = new TextScroller(label);
 		
 		frame.getContentPane().add(scroller, BorderLayout.WEST); 
 		frame.getContentPane().add(scroller2, BorderLayout.EAST); 
+		frame.setLocation(0,0);
+		frame.setSize(800, 600); 
+		frame.setVisible(true);
+		*/
+		
+		GraphView gp = GraphView.setData(file, author);
+		frame.getContentPane().add(gp, BorderLayout.CENTER); 
 		frame.setLocation(0,0);
 		frame.setSize(800, 600); 
 		frame.setVisible(true);

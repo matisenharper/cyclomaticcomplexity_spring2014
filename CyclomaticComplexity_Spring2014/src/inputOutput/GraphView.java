@@ -29,7 +29,7 @@ import javax.swing.JTextField;
 
 import cyclomaticComplexity.CyclomaticComplexityMethodCalc;
 import cyclomaticComplexity.GraphImage;
-import Spring2014Users.Student;
+import MISC.Student;
 import engine.MethodCode;
 import engine.MethodData;
 import engine.MethodDataImpl;
@@ -37,7 +37,7 @@ import engine.MethodUtils;
 import engine.MethodUtilsImpl;
 
 
-public class GraphView extends JFrame
+public class GraphView extends JPanel
 {
 	//this just for testing
 	static MethodData[] methodArray = {null};
@@ -178,8 +178,8 @@ public class GraphView extends JFrame
 				File file = new File(url.getPath());
 				System.out.println(file.getAbsolutePath());
 	             
-				Student author = Student.HAJAR;
-				setData(file, author);				
+				//Student author = Student.HAJAR;
+				//setData(file, author);				
 			}
 		});
 
@@ -216,13 +216,13 @@ public class GraphView extends JFrame
 	}
 
 	
-	public static void setData (File file, Student studentName)
+	public static GraphView setData (File file, Student studentName)
 	{
 		methodArray =gettingSignature(file, studentName);
-		buttonMan(methodArray);
+		return buttonMan(methodArray);
 		
 		
-		System.out.println("Method array(setData):  "+ methodArray);
+		//System.out.println("Method array(setData):  "+ methodArray);
 		
 		
 		/*********************************/
@@ -249,7 +249,7 @@ public class GraphView extends JFrame
 	}
 	
 	//will gather data to make each button
-	private static void buttonMan(MethodData[] methodMan)
+	private static GraphView buttonMan(MethodData[] methodMan)
 	{
 		int count =	0;
 		
@@ -302,6 +302,8 @@ public class GraphView extends JFrame
 			System.out.println("tempmethod:   " + tempmethod);
 			count ++;
 		}
+		
+		return graph;
 	}
 	
 }
