@@ -14,6 +14,7 @@ import org.junit.Before;
 import org.junit.Test;
 //import org.junit.After;
 
+import test.CyclomaticComplexity;
 
 
 
@@ -22,24 +23,11 @@ import tictactoe.Mark;
 import tictactoe.TicTacToeBoard;
 import tictactoe.TicTacToeBoardImpl_Hoffpauir;
 
+
 public class TicTacToe_SingleStudent_Test {
 	
 	private TicTacToeBoard ticTacToeBoard_STUDENT;
 	
-	
-	
-	@Retention(value=RUNTIME)
-	@Target(value=METHOD)
-	public @interface Points {
-	int value();
-	}
-	
-	@Retention(value=RUNTIME)
-	@Target(value=METHOD)
-	public @interface CyclomaticComplexity {
-	//setData(new File("./src/tictactoe/TicTacToeBoardImpl_Rocha"));
-	//ModalDialog dlg = new ModalDialog(new GraphView(new File("./src/tictactoe/TicTacToeBoardImpl_Rocha"), Student.ROCHA), "Student", "message");
-	}
 	@Before public void setUp() {
 		ticTacToeBoard_STUDENT = new TicTacToeBoardImpl_Hoffpauir();
 	}

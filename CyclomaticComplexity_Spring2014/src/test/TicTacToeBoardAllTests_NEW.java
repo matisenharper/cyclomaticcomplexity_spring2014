@@ -25,7 +25,7 @@ import org.junit.runner.Description;
 import org.junit.runner.RunWith;
 
 import test.Parameterized_Kart.Parameters;
-import test.TicTacToe_SingleStudent_Test.Points;
+import test.Points;
 import tictactoe.Mark;
 import tictactoe.TicTacToeBoard;
 import tictactoe.TicTacToeBoardImpl_Kart;
