@@ -10,6 +10,8 @@ import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
@@ -42,5 +44,10 @@ public class ModalDialog extends JDialog implements ActionListener {
   }
   public static void main(String[] a) {
     ModalDialog dlg = new ModalDialog(new GraphView(), "title", "message");
+    
+    
+    
+    /*ImageIcon img = new ImageIcon(OuterClass.class.getResource("Logo_Horizontal_blueGold"));
+    dlg .setIconImage(img.getImage());*/
   }
 }

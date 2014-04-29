@@ -34,7 +34,7 @@ public class RegexTest {
 
     public static void main(String[] args){
     	
-    	int asdf = 7;
+    	int asdf = 3;
         
     	File file = new File("./src/tictactoe/TicTacToeBoardImpl_Rocha.java");
     	

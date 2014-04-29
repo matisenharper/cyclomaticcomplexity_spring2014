@@ -2,6 +2,9 @@ package inputOutput;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Frame;
+import java.awt.Graphics;
+import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -14,14 +17,18 @@ import java.io.InputStreamReader;
 import java.lang.reflect.Method;
 import java.net.URL;
 
+import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
+import cyclomaticComplexity.CyclomaticComplexityMethodCalc;
+import cyclomaticComplexity.GraphImage;
 import Spring2014Users.Student;
 import engine.MethodCode;
 import engine.MethodData;
@@ -33,19 +40,23 @@ import engine.MethodUtilsImpl;
 public class GraphView extends JFrame
 {
 	//this just for testing
-	static Method[] buttonArray = {null};
+	static MethodData[] methodArray = {null};
+	static int selected;
+	static JPanel imagePanel;
+	static GraphView graph;
 	//
 
 	public GraphView() 
 	{
 		setSize(950, 800);
+		selected = -1;
+		this.setLayout(new BorderLayout());
 	}
 
 	private static class ImageShow extends JPanel
 	{
 		private ImageIcon image;
 		private JLabel label;
-
 		//constructor
 		ImageShow(JPanel graph)
 		{
@@ -59,6 +70,7 @@ public class GraphView extends JFrame
 	private static int getcal (int i)
 	{
 		JPanel buttons= new JPanel();
+		
 		return i;
 	}
 	
@@ -67,7 +79,6 @@ public class GraphView extends JFrame
 	{
 		MethodUtils m = new MethodUtilsImpl();
 		MethodData[] methodSignature =m.getMethods( program, S);
-		System.out.print("methodSignature "+methodSignature.toString());
 		return methodSignature;
 	}
 	private MethodData toGetCodeBody (Student author,MethodCode method)
@@ -76,11 +87,19 @@ public class GraphView extends JFrame
 		System.out.print("toGetCodeBody"+body);
 		return body;
 	}
-	private static Image gettingImage (String body)
+	private static void changeImage ()
 	{
-		Image img = cyclomaticComplexity.GraphImage.getImage(body); 
-		System.out.print("gettingImage"+img);
-		return img;
+		File imgfile = GraphImage.getImage(methodArray[selected]);
+		imagePanel.removeAll();
+		System.out.println("sdfg");
+		ImagePanel img = new ImagePanel(imgfile);
+		ImageScroller scroller = new ImageScroller(img);
+		imagePanel.setLayout(new BorderLayout());
+		imagePanel.add(scroller);
+		
+		graph.revalidate();
+		
+		
 	}
 	private static int gettingComplexity (MethodData body1)
 	{
@@ -88,35 +107,31 @@ public class GraphView extends JFrame
 		return cal;
 	}
 
-	private static void createButton(String methodName, JPanel buttons)//, Student studentName, File file)
+	private static void createButton(String methodName,JPanel buttons, ButtonGroup group, int methodIndex)//, Student studentName, File file)
 	{
-		JPanel buttonPanel= new JPanel();
-		
+				
 		System.out.println("createButton method ");
-		JRadioButton button = new JRadioButton();
+		JRadioButton button = new methodRadioButton(methodName, methodIndex);
+		button.setBackground(Color.decode("#16E5C4"));
+		buttons.add(button);
+		group.add(button);
+		
 
-		button.addActionListener(new ActionListener ()
-			{
-				public void actionPerformed (ActionEvent  e, File file2, MethodData buttonName2 )
-				{
-					e.getID();
-					System.out.println("stuff pringting out" +buttonName2.toString() +" "+file2.toString()+ " " +e.getID() );
-
-					String name = buttonName2.toString();
-
-					System.out.println("button is still not working " + name);
-				}
-
-				@Override
-				public void actionPerformed(ActionEvent arg0) {
-					// TODO Auto-generated method stub
-				}
-			});	
+		RadioListener listens=new RadioListener();
+		button.addActionListener(listens);		
 	}
 
+	
+	static class RadioListener implements ActionListener{
+		public void actionPerformed(ActionEvent e){
+		System.out.println(e.getSource().toString());
+		GraphView.selected = ((methodRadioButton)e.getSource()).i;
+		GraphView.changeImage();
+	}
+	}
 	private static JTextField complexityBox (int i)
 	{
-		JTextField calPanel = new JTextField(27);
+		JTextField calPanel = new JTextField("Complexity Number",getcal(20));
 		calPanel.addActionListener(null);
 		System.out.println("  complexityBox working  ");
 		return calPanel;
@@ -162,12 +177,9 @@ public class GraphView extends JFrame
 				assert url != null : "url is null!";
 				File file = new File(url.getPath());
 				System.out.println(file.getAbsolutePath());
-				
+	             
 				Student author = Student.HAJAR;
-				
-				setData(file, author);
-
-				
+				setData(file, author);				
 			}
 		});
 
@@ -204,11 +216,34 @@ public class GraphView extends JFrame
 	}
 
 	
-	private static void setData (File file, Student studentName)
+	public static void setData (File file, Student studentName)
 	{
-		MethodData[] methodArray =gettingSignature(file, studentName);
+		methodArray =gettingSignature(file, studentName);
 		buttonMan(methodArray);
+		
+		
 		System.out.println("Method array(setData):  "+ methodArray);
+		
+		
+		/*********************************/
+		//Now when the button is called do:
+		
+		//use
+		//toGetCodeBody (Student author,MethodCode method)
+		//get it when the button is clicked to send it to get the pic
+		
+		//use
+		//gettingImage (String body)
+		//send the body to get the pic and display
+		
+		//use
+		//gettingComplexity (MethodData body1)
+		//to get the complexity Number and display
+		
+		//text = text + "Complexity = " + CyclomaticComplexityMethodCalc.getCyclomaticComplexity(methods[asdf]);
+    	//label.setText(text);
+		
+		/**********************************/
 		
 		//MethodUtilsImpl.getMethods(file, studentName);	
 	}
@@ -218,33 +253,56 @@ public class GraphView extends JFrame
 	{
 		int count =	0;
 		
-		GraphView graph = new GraphView();//M will do this
-		JPanel imagePanel = new JPanel();
+		graph = new GraphView();
+		imagePanel = new JPanel();
 		JPanel buttons= new JPanel();
+		ButtonGroup group=new ButtonGroup();
 		JPanel calPanel = new JPanel();
+		JPanel ForColor = new JPanel();
+		
+		selected = 0;
+		File imgfile = GraphImage.getImage(methodArray[selected]); 
+		ImagePanel img = new ImagePanel(imgfile);
+		ImageScroller scroller = new ImageScroller(img);
+		scroller.setVisible(true);
+		imagePanel.setLayout(new BorderLayout());
+		imagePanel.add(scroller);
+		
 		graph.add(buttons,BorderLayout.WEST);
 		graph.add(imagePanel,BorderLayout.EAST);
 		graph.add(calPanel,BorderLayout.SOUTH);
-
-		imagePanel.setBackground( Color.cyan);
-		calPanel.setBackground( Color.blue);
-		buttons.setBackground(Color.GREEN);
+		graph.add(ForColor,BorderLayout.CENTER);
+		buttons.setLayout(new GridLayout((methodMan.length-1),1));
+		
+		graph.setBackground(Color.decode("#2014FF"));
+		
+		ForColor.setBackground(Color.decode("#16E5C4"));
+		imagePanel.setBackground( Color.decode("#16E5C4"));
+		calPanel.setBackground(Color.decode("#16E5C4"));
+		buttons.setBackground(Color.decode("#16E5C4"));
+		
+		 //imagePanel = new JPanel(getClass().getResource("demo.jpg"));
 		
 		buttons.setVisible(true);
 		graph.setVisible(true);
 		calPanel.setVisible(true);
+		//buttons.setLayout(new GridLayout((methodMan.length-1),1));
 		
-		complexityBox(9);
 		
-		while (count <= methodMan.length)
+		complexityBox(getcal(9));
+		System.out.println(complexityBox(getcal(9)).toString()+"checking complexity");
+		
+		while (count < methodMan.length)
 		{
 			String tempmethod = methodMan[count].getName().toString();
-			createButton(tempmethod, buttons);
+			int complexity=CyclomaticComplexityMethodCalc.getCyclomaticComplexity(methodMan[count]);
+			
+			createButton(tempmethod, buttons, group, count);
 			System.out.println("tempmethod count " + count +" methodMan Length " + methodMan.length);
 			System.out.println("tempmethod:   " + tempmethod);
 			count ++;
 		}
 	}
-
+	
 }
 
