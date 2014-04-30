@@ -9,7 +9,6 @@ import japa.parser.ast.visitor.VoidVisitorAdapter;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 
 import MISC.Student;
 
@@ -18,6 +17,7 @@ public class MethodUtilsImpl  implements MethodUtils{
 	public MethodUtilsImpl(){
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	public MethodData[] getMethods(File program, Student s) {
 		CompilationUnit cu = null;
@@ -44,6 +44,7 @@ public class MethodUtilsImpl  implements MethodUtils{
 		return methods;
 	}
 	
+	@SuppressWarnings("rawtypes")
 	private static class MethodVisitor extends VoidVisitorAdapter {
 		
 		ArrayList<MethodDeclaration> methodlist;

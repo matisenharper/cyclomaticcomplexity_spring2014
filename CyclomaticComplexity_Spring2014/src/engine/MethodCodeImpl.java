@@ -5,7 +5,6 @@ import java.util.List;
 
 import japa.parser.ast.body.MethodDeclaration;
 import japa.parser.ast.body.Parameter;
-import japa.parser.ast.expr.AnnotationExpr;
 import japa.parser.ast.stmt.BlockStmt;
 
 public class MethodCodeImpl implements MethodCode {

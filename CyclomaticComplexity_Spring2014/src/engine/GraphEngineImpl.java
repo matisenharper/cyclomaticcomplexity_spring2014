@@ -117,7 +117,6 @@ public class GraphEngineImpl implements GraphEngine{
 	@Override
 	public GraphModel getGraphModel(MethodData method) {
 		
-		//generateGraphModel(code);
 		StatementParser.initializeGraph(); 
 		StatementParser sp = new StatementParser(StatementParser.getGraph().getNodeCount() - 1);
 		sp.visit(((MethodCodeImpl)method.getMethod()).getBodyBlock(), null);
@@ -131,7 +130,8 @@ public class GraphEngineImpl implements GraphEngine{
 	/**
      * Simple visitor implementation for visiting MethodDeclaration nodes.
      */
-    private static class StatementParser extends VoidVisitorAdapter {
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	private static class StatementParser extends VoidVisitorAdapter {
     	private static GraphModel graph;
     	private int lastnode;
     	private ArrayList<Integer> alternatelastnodes;
@@ -556,409 +556,341 @@ public class GraphEngineImpl implements GraphEngine{
 		//Not implemented statements
 		@Override
 		public void visit(AnnotationDeclaration n, Object arg) {
-			// TODO Auto-generated method stub
 			super.visit(n, arg);
 		}
 
 		@Override
 		public void visit(AnnotationMemberDeclaration n, Object arg) {
-			// TODO Auto-generated method stub
 			super.visit(n, arg);
 		}
 
 		@Override
 		public void visit(ArrayAccessExpr n, Object arg) {
-			// TODO Auto-generated method stub
 			super.visit(n, arg);
 		}
 
 		@Override
 		public void visit(ArrayCreationExpr n, Object arg) {
-			// TODO Auto-generated method stub
 			super.visit(n, arg);
 		}
 
 		@Override
 		public void visit(ArrayInitializerExpr n, Object arg) {
-			// TODO Auto-generated method stub
 			super.visit(n, arg);
 		}
 
 		@Override
 		public void visit(AssertStmt n, Object arg) {
-			// TODO Auto-generated method stub
 			super.visit(n, arg);
 		}
 		
 		@Override
 		public void visit(BinaryExpr n, Object arg) {
-			// TODO Auto-generated method stub
 			super.visit(n, arg);
 		}
 
 		@Override
 		public void visit(BlockComment n, Object arg) {
-			// TODO Auto-generated method stub
 			super.visit(n, arg);
 		}
 
 		@Override
 		public void visit(BlockStmt n, Object arg) {
-			// TODO Auto-generated method stub
 			super.visit(n, arg);
 		}
 
 		@Override
 		public void visit(BooleanLiteralExpr n, Object arg) {
-			// TODO Auto-generated method stub
 			super.visit(n, arg);
 		}
 
 		@Override
 		public void visit(CastExpr n, Object arg) {
-			// TODO Auto-generated method stub
 			super.visit(n, arg);
 		}
 
 		@Override
 		public void visit(CatchClause n, Object arg) {
-			// TODO Auto-generated method stub
 			super.visit(n, arg);
 		}
 
 		@Override
 		public void visit(CharLiteralExpr n, Object arg) {
-			// TODO Auto-generated method stub
 			super.visit(n, arg);
 		}
 
 		@Override
 		public void visit(ClassExpr n, Object arg) {
-			// TODO Auto-generated method stub
 			super.visit(n, arg);
 		}
 
 		@Override
 		public void visit(ClassOrInterfaceDeclaration n, Object arg) {
-			// TODO Auto-generated method stub
 			super.visit(n, arg);
 		}
 
 		@Override
 		public void visit(ClassOrInterfaceType n, Object arg) {
-			// TODO Auto-generated method stub
 			super.visit(n, arg);
 		}
 
 		@Override
 		public void visit(CompilationUnit n, Object arg) {
-			// TODO Auto-generated method stub
 			super.visit(n, arg);
 		}
 
 		@Override
 		public void visit(ConditionalExpr n, Object arg) {
-			// TODO Auto-generated method stub
 			super.visit(n, arg);
 		}
 
 		@Override
 		public void visit(ConstructorDeclaration n, Object arg) {
-			// TODO Auto-generated method stub
 			super.visit(n, arg);
 		}
 
 		@Override
 		public void visit(ContinueStmt n, Object arg) {
-			// TODO Auto-generated method stub
 			super.visit(n, arg);
 		}
 
 		@Override
 		public void visit(DoStmt n, Object arg) {
-			// TODO Auto-generated method stub
 			super.visit(n, arg);
 		}
 
 		@Override
 		public void visit(DoubleLiteralExpr n, Object arg) {
-			// TODO Auto-generated method stub
 			super.visit(n, arg);
 		}
 
 		@Override
 		public void visit(EmptyMemberDeclaration n, Object arg) {
-			// TODO Auto-generated method stub
 			super.visit(n, arg);
 		}
 
 		@Override
 		public void visit(EmptyStmt n, Object arg) {
-			// TODO Auto-generated method stub
 			super.visit(n, arg);
 		}
 
 		@Override
 		public void visit(EmptyTypeDeclaration n, Object arg) {
-			// TODO Auto-generated method stub
 			super.visit(n, arg);
 		}
 
 		@Override
 		public void visit(EnclosedExpr n, Object arg) {
-			// TODO Auto-generated method stub
 			super.visit(n, arg);
 		}
 
 		@Override
 		public void visit(EnumConstantDeclaration n, Object arg) {
-			// TODO Auto-generated method stub
 			super.visit(n, arg);
 		}
 
 		@Override
 		public void visit(EnumDeclaration n, Object arg) {
-			// TODO Auto-generated method stub
 			super.visit(n, arg);
 		}
 
 		@Override
 		public void visit(ExplicitConstructorInvocationStmt n, Object arg) {
-			// TODO Auto-generated method stub
 			super.visit(n, arg);
 		}
 
 		@Override
 		public void visit(ExpressionStmt n, Object arg) {
-			// TODO Auto-generated method stub
 			super.visit(n, arg);
 		}
 
 		@Override
 		public void visit(FieldAccessExpr n, Object arg) {
-			// TODO Auto-generated method stub
 			super.visit(n, arg);
 		}
 
 		@Override
 		public void visit(FieldDeclaration n, Object arg) {
-			// TODO Auto-generated method stub
 			super.visit(n, arg);
 		}
 
 		@Override
 		public void visit(ImportDeclaration n, Object arg) {
-			// TODO Auto-generated method stub
 			super.visit(n, arg);
 		}
 
 		@Override
 		public void visit(InitializerDeclaration n, Object arg) {
-			// TODO Auto-generated method stub
 			super.visit(n, arg);
 		}
 
 		@Override
 		public void visit(InstanceOfExpr n, Object arg) {
-			// TODO Auto-generated method stub
 			super.visit(n, arg);
 		}
 
 		@Override
 		public void visit(IntegerLiteralExpr n, Object arg) {
-			// TODO Auto-generated method stub
 			super.visit(n, arg);
 		}
 
 		@Override
 		public void visit(IntegerLiteralMinValueExpr n, Object arg) {
-			// TODO Auto-generated method stub
 			super.visit(n, arg);
 		}
 
 		@Override
 		public void visit(JavadocComment n, Object arg) {
-			// TODO Auto-generated method stub
 			super.visit(n, arg);
 		}
 
 		@Override
 		public void visit(LabeledStmt n, Object arg) {
-			// TODO Auto-generated method stub
 			super.visit(n, arg);
 		}
 
 		@Override
 		public void visit(LineComment n, Object arg) {
-			// TODO Auto-generated method stub
 			super.visit(n, arg);
 		}
 
 		@Override
 		public void visit(LongLiteralExpr n, Object arg) {
-			// TODO Auto-generated method stub
 			super.visit(n, arg);
 		}
 
 		@Override
 		public void visit(LongLiteralMinValueExpr n, Object arg) {
-			// TODO Auto-generated method stub
 			super.visit(n, arg);
 		}
 
 		@Override
 		public void visit(MarkerAnnotationExpr n, Object arg) {
-			// TODO Auto-generated method stub
 			super.visit(n, arg);
 		}
 
 		@Override
 		public void visit(MemberValuePair n, Object arg) {
-			// TODO Auto-generated method stub
 			super.visit(n, arg);
 		}
 
 		@Override
 		public void visit(MethodDeclaration n, Object arg) {
-			// TODO Auto-generated method stub
 			super.visit(n, arg);
 		}
 
 		@Override
 		public void visit(NameExpr n, Object arg) {
-			// TODO Auto-generated method stub
 			super.visit(n, arg);
 		}
 
 		@Override
 		public void visit(NormalAnnotationExpr n, Object arg) {
-			// TODO Auto-generated method stub
 			super.visit(n, arg);
 		}
 
 		@Override
 		public void visit(NullLiteralExpr n, Object arg) {
-			// TODO Auto-generated method stub
 			super.visit(n, arg);
 		}
 
 		@Override
 		public void visit(ObjectCreationExpr n, Object arg) {
-			// TODO Auto-generated method stub
 			super.visit(n, arg);
 		}
 
 		@Override
 		public void visit(PackageDeclaration n, Object arg) {
-			// TODO Auto-generated method stub
 			super.visit(n, arg);
 		}
 
 		@Override
 		public void visit(Parameter n, Object arg) {
-			// TODO Auto-generated method stub
 			super.visit(n, arg);
 		}
 
 		@Override
 		public void visit(PrimitiveType n, Object arg) {
-			// TODO Auto-generated method stub
 			super.visit(n, arg);
 		}
 
 		@Override
 		public void visit(QualifiedNameExpr n, Object arg) {
-			// TODO Auto-generated method stub
 			super.visit(n, arg);
 		}
 
 		@Override
 		public void visit(ReferenceType n, Object arg) {
-			// TODO Auto-generated method stub
 			super.visit(n, arg);
 		}
 
 		@Override
 		public void visit(SingleMemberAnnotationExpr n, Object arg) {
-			// TODO Auto-generated method stub
 			super.visit(n, arg);
 		}
 
 		@Override
 		public void visit(StringLiteralExpr n, Object arg) {
-			// TODO Auto-generated method stub
 			super.visit(n, arg);
 		}
 
 		@Override
 		public void visit(SuperExpr n, Object arg) {
-			// TODO Auto-generated method stub
 			super.visit(n, arg);
 		}
 
 		@Override
 		public void visit(SynchronizedStmt n, Object arg) {
-			// TODO Auto-generated method stub
 			super.visit(n, arg);
 		}
 
 		@Override
 		public void visit(ThisExpr n, Object arg) {
-			// TODO Auto-generated method stub
 			super.visit(n, arg);
 		}
 
 		@Override
 		public void visit(ThrowStmt n, Object arg) {
-			// TODO Auto-generated method stub
 			super.visit(n, arg);
 		}
 
 		@Override
 		public void visit(TryStmt n, Object arg) {
-			// TODO Auto-generated method stub
 			super.visit(n, arg);
 		}
 
 		@Override
 		public void visit(TypeDeclarationStmt n, Object arg) {
-			// TODO Auto-generated method stub
 			super.visit(n, arg);
 		}
 
 		@Override
 		public void visit(TypeParameter n, Object arg) {
-			// TODO Auto-generated method stub
 			super.visit(n, arg);
 		}
 
 		@Override
 		public void visit(UnaryExpr n, Object arg) {
-			// TODO Auto-generated method stub
 			super.visit(n, arg);
 		}
 
 		@Override
 		public void visit(VariableDeclarator n, Object arg) {
-			// TODO Auto-generated method stub
 			super.visit(n, arg);
 		}
 
 		@Override
 		public void visit(VariableDeclaratorId n, Object arg) {
-			// TODO Auto-generated method stub
 			super.visit(n, arg);
 		}
 
 		@Override
 		public void visit(VoidType n, Object arg) {
-			// TODO Auto-generated method stub
 			super.visit(n, arg);
 		}
 
 		@Override
 		public void visit(WildcardType n, Object arg) {
-			// TODO Auto-generated method stub
 			super.visit(n, arg);
 		}
     }
