@@ -20,14 +20,20 @@ import javax.swing.JPanel;
 public class ModalDialog extends JDialog implements ActionListener {
   public ModalDialog(JPanel parent) {
     super();
+    JPanel messagePane = new JPanel();
+    messagePane.setLayout(new BorderLayout());
     if (parent != null) {
       //Dimension parentSize = parent.getSize(); 
       //Point p = parent.getLocation(); 
+      messagePane.setSize(parent.getWidth(), parent.getHeight());
       setLocation(0,0);
-      this.setSize(800, 600);
+      this.setSize(parent.getWidth(), parent.getHeight());
+      this.setLayout(new BorderLayout());
+      messagePane.add(parent);
+      this.setResizable(false);
+      
+      
     }
-    JPanel messagePane = new JPanel();
-    messagePane.add(parent);
     getContentPane().add(messagePane, BorderLayout.CENTER);
     //JPanel buttonPane = new JPanel();
     //JButton button = new JButton("OK"); 
@@ -35,7 +41,7 @@ public class ModalDialog extends JDialog implements ActionListener {
     //button.addActionListener(this);
     //getContentPane().add(buttonPane, BorderLayout.SOUTH);
     setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-    pack(); 
+    revalidate(); 
     setModal(true);
     setVisible(true);
   }
@@ -43,6 +49,8 @@ public class ModalDialog extends JDialog implements ActionListener {
     setVisible(false); 
     dispose(); 
   }
+  
+  
   //public static void main(String[] a) {
   //  ModalDialog dlg = new ModalDialog(new GraphView(), "title", "message");
     
