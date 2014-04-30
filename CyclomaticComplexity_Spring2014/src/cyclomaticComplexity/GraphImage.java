@@ -36,9 +36,12 @@ public class GraphImage
 		for (int i = 0; i < ali.size();i++){
 			gv.addln(ali.get(i)[0]+" -> "+ali.get(i)[1]+";");
 		}
-		gv.addln(gv.end_graph());
-		
-		String type = "png";
+		for (int i = 0; i < as.size();i++){
+			gv.addln(""+i+" [label=\""+as.get(i)+"\",shape=box,fillcolor=\"#FFFFFF\",style=\"filled,rounded\"]");
+		}
+    	gv.addln(gv.end_graph());
+    	
+    	String type = "png";
 		File out = new File("out." + type);   // out.gif in this example
 		gv.writeGraphToFile( gv.getGraph( gv.getDotSource(), type ), out );
 		

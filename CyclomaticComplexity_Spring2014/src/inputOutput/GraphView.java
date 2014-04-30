@@ -162,7 +162,7 @@ public class GraphView extends JPanel
 		graph.setBackground(Color.decode("#2014FF"));
 		
 		ForColor.setBackground(Color.decode("#16E5C4"));
-		imagePanel.setBackground( Color.decode("#16E5C4"));
+		imagePanel.setBackground( Color.decode("#000000"));
 		calPanel.setBackground(Color.decode("#16E5C4"));
 		buttons.setBackground(Color.decode("#16E5C4"));
 		

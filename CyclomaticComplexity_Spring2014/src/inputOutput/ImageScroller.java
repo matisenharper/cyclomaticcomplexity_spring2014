@@ -1,5 +1,6 @@
 package inputOutput;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GraphicsDevice;
@@ -16,6 +17,7 @@ public class ImageScroller extends JScrollPane {
 	public ImageScroller(Component c){
 		super(c);
 		this.setSize(c.getWidth(), c.getHeight());
+		this.setBackground(Color.decode("#FFFFFF"));
 	}
 	
 	@Override
@@ -25,10 +27,6 @@ public class ImageScroller extends JScrollPane {
 		int height = gd.getDisplayMode().getHeight();
 		
 		width = (width*6)/10;
-		if(width < this.getWidth()){
-			return new Dimension(width, 0);
-		}else{
-			return this.getSize();
-		}
+		return new Dimension(width, 0);
     }
 }

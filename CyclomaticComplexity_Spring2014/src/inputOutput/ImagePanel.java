@@ -1,5 +1,6 @@
 package inputOutput;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Image;
@@ -26,6 +27,7 @@ public class ImagePanel extends JPanel{
             // handle exception...
        }
        this.setSize(image.getWidth(), image.getHeight());
+       this.setBackground(Color.decode("#FFFFFF"));
     }
 
     @Override
