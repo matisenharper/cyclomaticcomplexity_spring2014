@@ -44,7 +44,7 @@ public class ModalDialog extends JDialog implements ActionListener {
     //button.addActionListener(this);
     //getContentPane().add(buttonPane, BorderLayout.SOUTH);
     setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-    revalidate(); 
+   // revalidate(); 
     setModal(true);
     setVisible(true);
   }
