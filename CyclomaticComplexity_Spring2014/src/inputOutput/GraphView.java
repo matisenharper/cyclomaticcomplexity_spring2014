@@ -44,6 +44,7 @@ public class GraphView extends JPanel
 	static int selected;
 	static JPanel imagePanel;
 	static GraphView graph;
+	static JTextField complexityNumber;
 	//
 
 	public GraphView() 
@@ -84,14 +85,12 @@ public class GraphView extends JPanel
 	private MethodData toGetCodeBody (Student author,MethodCode method)
 	{
 		MethodData body = new MethodDataImpl(author, method);
-		System.out.print("toGetCodeBody"+body);
 		return body;
 	}
 	private static void changeImage ()
 	{
 		File imgfile = GraphImage.getImage(methodArray[selected]);
 		imagePanel.removeAll();
-		System.out.println("sdfg");
 		ImagePanel img = new ImagePanel(imgfile);
 		ImageScroller scroller = new ImageScroller(img);
 		imagePanel.setLayout(new BorderLayout());
@@ -101,16 +100,14 @@ public class GraphView extends JPanel
 		
 		
 	}
-	private static int gettingComplexity (MethodData body1)
+	private static void changeComplexity ()
 	{
-		int cal = cyclomaticComplexity.CyclomaticComplexityMethodCalc.getCyclomaticComplexity(body1); 
-		return cal;
+		int cal = cyclomaticComplexity.CyclomaticComplexityMethodCalc.getCyclomaticComplexity(methodArray[selected]); 
+		complexityNumber.setText("Complexity: " + cal);	
 	}
 
 	private static void createButton(String methodName,JPanel buttons, ButtonGroup group, int methodIndex)//, Student studentName, File file)
 	{
-				
-		System.out.println("createButton method ");
 		JRadioButton button = new methodRadioButton(methodName, methodIndex);
 		button.setBackground(Color.decode("#16E5C4"));
 		buttons.add(button);
@@ -124,25 +121,20 @@ public class GraphView extends JPanel
 	
 	static class RadioListener implements ActionListener{
 		public void actionPerformed(ActionEvent e){
-		System.out.println(e.getSource().toString());
 		GraphView.selected = ((methodRadioButton)e.getSource()).i;
 		GraphView.changeImage();
+		GraphView.changeComplexity();
 	}
 	}
 	private static JTextField complexityBox (int i)
 	{
-		JTextField calPanel = new JTextField("Complexity Number",getcal(20));
+		JTextField calPanel = new JTextField("Complexity Number",getcal(i));
 		calPanel.addActionListener(null);
-		System.out.println("  complexityBox working  ");
 		return calPanel;
 	}
 
 	private static void MethodHeaderLooker(File file, JPanel graph) throws IOException
 	{
-		//method header example to look for
-		//final String REGEX = "/public [a-zA-Z1-9]([a-zA-Z1-9])private [a-zA-Z1-9]([a-zA-Z1-9])/";
-		//File filejava = new File(file);
-		System.out.println("running methodheaderlooker");
 
 		try 
 		{
@@ -159,10 +151,6 @@ public class GraphView extends JPanel
 		}
 
 		catch(FileNotFoundException e) { 
-			System.out.println("file.getAbsolutePath() = " + file.getAbsolutePath());
-			System.out.println("catching" + e);
-			System.out.println(e.getClass());
-			//handle this 
 		}
 	}
 
@@ -175,37 +163,11 @@ public class GraphView extends JPanel
 				ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 				URL url = classLoader.getResource("inputOutput/Tic.txt");
 				assert url != null : "url is null!";
-				File file = new File(url.getPath());
-				System.out.println(file.getAbsolutePath());
-	             
-				//Student author = Student.HAJAR;
-				//setData(file, author);				
+				File file = new File(url.getPath());				
 			}
 		});
 
-
-		/*http://stackoverflow.com/questions/13667041/reading-a-txt-file-in-a-java-gui
-		 * 
-		 * pattern = Pattern.compile(REGEX);
-			matcher = pattern.matcher(INPUT);
-
-			System.out.println("Current REGEX is: "
-					+ REGEX);
-			System.out.println("Current INPUT is: "
-					+ INPUT);
-
-			System.out.println("lookingAt(): "
-					+ matcher.lookingAt());
-			System.out.println("matches(): "
-					+ matcher.matches());*/
 	}
-
-	/*public static void cyclomaticComplexityJDialogExample()
-	{
-		System.out.println("start of jdialog with jpanel for ");
-		ModalDialog dlg = new ModalDialog(new GraphView(), "title", "Hebah's GUI/Cyclomatic Complexity View");
-		System.out.println("End of jdialog with jpanel ");
-	}*/
 
 
 	private static void showImage(JPanel graph)
@@ -220,35 +182,9 @@ public class GraphView extends JPanel
 	{
 		methodArray =gettingSignature(file, studentName);
 		return buttonMan(methodArray);
-		
-		
-		//System.out.println("Method array(setData):  "+ methodArray);
-		
-		
-		/*********************************/
-		//Now when the button is called do:
-		
-		//use
-		//toGetCodeBody (Student author,MethodCode method)
-		//get it when the button is clicked to send it to get the pic
-		
-		//use
-		//gettingImage (String body)
-		//send the body to get the pic and display
-		
-		//use
-		//gettingComplexity (MethodData body1)
-		//to get the complexity Number and display
-		
-		//text = text + "Complexity = " + CyclomaticComplexityMethodCalc.getCyclomaticComplexity(methods[asdf]);
-    	//label.setText(text);
-		
-		/**********************************/
-		
-		//MethodUtilsImpl.getMethods(file, studentName);	
+				
 	}
 	
-	//will gather data to make each button
 	private static GraphView buttonMan(MethodData[] methodMan)
 	{
 		int count =	0;
@@ -259,6 +195,9 @@ public class GraphView extends JPanel
 		ButtonGroup group=new ButtonGroup();
 		JPanel calPanel = new JPanel();
 		JPanel ForColor = new JPanel();
+		complexityNumber = new JTextField();
+		
+		calPanel.add(complexityNumber);
 		
 		selected = 0;
 		File imgfile = GraphImage.getImage(methodArray[selected]); 
@@ -266,7 +205,6 @@ public class GraphView extends JPanel
 		ImageScroller scroller = new ImageScroller(img);
 		scroller.setVisible(true);
 		imagePanel.setLayout(new BorderLayout());
-		imagePanel.add(scroller);
 		
 		graph.add(buttons,BorderLayout.WEST);
 		graph.add(imagePanel,BorderLayout.EAST);
@@ -281,30 +219,20 @@ public class GraphView extends JPanel
 		calPanel.setBackground(Color.decode("#16E5C4"));
 		buttons.setBackground(Color.decode("#16E5C4"));
 		
-		 //imagePanel = new JPanel(getClass().getResource("demo.jpg"));
-		
 		buttons.setVisible(true);
 		graph.setVisible(true);
 		calPanel.setVisible(true);
-		//buttons.setLayout(new GridLayout((methodMan.length-1),1));
 		
-		
-		complexityBox(getcal(9));
-		System.out.println(complexityBox(getcal(9)).toString()+"checking complexity");
-		
+		complexityBox(getcal(count));	
 		while (count < methodMan.length)
 		{
 			String tempmethod = methodMan[count].getName().toString();
 			int complexity=CyclomaticComplexityMethodCalc.getCyclomaticComplexity(methodMan[count]);
 			
 			createButton(tempmethod, buttons, group, count);
-			System.out.println("tempmethod count " + count +" methodMan Length " + methodMan.length);
-			System.out.println("tempmethod:   " + tempmethod);
 			count ++;
 		}
-		
 		return graph;
 	}
-	
 }
 

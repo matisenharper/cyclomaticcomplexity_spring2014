@@ -37,7 +37,7 @@ public class RegexTest {
     	
     	int asdf = 3;
         
-    	File file = new File("./src/tictactoe/TicTacToeBoardImpl_Rocha.java");
+    	File file = new File("./src/tictactoe/TicTacToeBoardImpl_Hoffpauir.java");
     	
     	GraphEngine g = new GraphEngineImpl();
     	Student author = Spring2014Users.Student.BOB;
