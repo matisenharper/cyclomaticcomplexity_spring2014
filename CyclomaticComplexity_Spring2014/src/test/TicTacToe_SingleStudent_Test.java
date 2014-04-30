@@ -1,13 +1,6 @@
 package test;
 
-import static java.lang.annotation.ElementType.METHOD;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import static org.junit.Assert.assertEquals;
-import inputOutput.GraphView;
-
-import java.io.File;
-import java.lang.annotation.Retention;
-import java.lang.annotation.Target;
 
 import org.junit.AfterClass;
 import org.junit.Before;
