@@ -24,6 +24,7 @@ public class ModalDialog extends JDialog implements ActionListener {
       Dimension parentSize = parent.getSize(); 
       Point p = parent.getLocation(); 
       setLocation(p.x + parentSize.width / 4, p.y + parentSize.height / 4);
+      this.setSize(parent.getWidth(), parent.getHeight());
     }
     JPanel messagePane = new JPanel();
     messagePane.add(parent);
