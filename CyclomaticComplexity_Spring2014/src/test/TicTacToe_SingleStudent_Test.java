@@ -2,47 +2,36 @@ package test;
 
 import static org.junit.Assert.assertEquals;
 
+import java.io.File;
+
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 //import org.junit.After;
 
-import test.CyclomaticComplexity;
-
 
 
 import Spring2014Users.Student;
+import test.CyclomaticComplexity;
 import tictactoe.Mark;
 import tictactoe.TicTacToeBoard;
-import tictactoe.TicTacToeBoardImpl_Hoffpauir;
+import tictactoe.TicTacToeBoardImpl_Rocha;
+import test.CCInputDataImpl;
 
 
 public class TicTacToe_SingleStudent_Test {
 	
-	private TicTacToeBoard ticTacToeBoard_STUDENT;
+	public static final CCInputDataImpl CCInputData = new CCInputDataImpl(new File("./src/tictactoe/TicTacToeBoardImpl_Rocha.java"),Student.ROCHA);
 	
+	private TicTacToeBoard ticTacToeBoard_STUDENT;
 	@Before public void setUp() {
-		ticTacToeBoard_STUDENT = new TicTacToeBoardImpl_Hoffpauir();
+		ticTacToeBoard_STUDENT = new TicTacToeBoardImpl_Rocha();
 	}
 	@CyclomaticComplexity
 	@AfterClass
 	public static void classEnding(){
 		
 	}
-	/*@Before
-	public void initBeforeEachTestMethod()
-	{
-		System.out.println("BEFORE : student = " + student);
-		ticTacToeBoard_STUDENT = getStudentTicTacToeBoard(student);
-	}*/
-	
-	/*@After
-	public void cleanUpAfterEachTestMethod()
-	{
-		System.out.println("AFTER : student = " + student);
-		
-	}*/
-	
 	@Points(value=5)
 	@Test public void emptyBoardTest()
 	{

@@ -17,10 +17,11 @@ import inputOutput.GraphView;
 @Target(value=METHOD)
 public @interface CyclomaticComplexity {
 	
-	File file = new File("./src/tictactoe/TicTacToeBoardImpl_Rocha.java");
-	Student author = Student.ROCHA;
-	GraphView gp = GraphView.setData(file, author);
-	ModalDialog dlg = new ModalDialog(gp);
+	File file =TicTacToe_SingleStudent_Test.CCInputData.getFile();
+	Student student = TicTacToe_SingleStudent_Test.CCInputData.getStudent();
+	//File file = new File("./src/tictactoe/TicTacToeBoardImpl_Rocha.java");
+	GraphView gp = GraphView.setData(file, student);
+	ModalDialog dlg = new ModalDialog(gp, student);
 	//frame.getContentPane().add(gp, BorderLayout.CENTER); added to jdialog
 	//frame.setLocation(0,0); added to jdialog
 	//frame.setSize(800, 600); added to jdialog

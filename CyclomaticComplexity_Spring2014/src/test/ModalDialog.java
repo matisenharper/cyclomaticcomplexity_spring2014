@@ -17,9 +17,12 @@ import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+
+import Spring2014Users.Student;
 public class ModalDialog extends JDialog implements ActionListener {
-  public ModalDialog(JPanel parent) {
+  public ModalDialog(JPanel parent, Student student) {
     super();
+    this.setTitle(student.toString());
     JPanel messagePane = new JPanel();
     messagePane.setLayout(new BorderLayout());
     if (parent != null) {
