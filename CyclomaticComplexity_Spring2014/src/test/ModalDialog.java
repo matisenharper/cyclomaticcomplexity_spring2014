@@ -21,19 +21,19 @@ public class ModalDialog extends JDialog implements ActionListener {
   public ModalDialog(JPanel parent) {
     super();
     if (parent != null) {
-      Dimension parentSize = parent.getSize(); 
-      Point p = parent.getLocation(); 
-      setLocation(p.x + parentSize.width / 4, p.y + parentSize.height / 4);
-      this.setSize(parent.getWidth(), parent.getHeight());
+      //Dimension parentSize = parent.getSize(); 
+      //Point p = parent.getLocation(); 
+      setLocation(0,0);
+      this.setSize(800, 600);
     }
     JPanel messagePane = new JPanel();
     messagePane.add(parent);
-    getContentPane().add(messagePane);
-    JPanel buttonPane = new JPanel();
-    JButton button = new JButton("OK"); 
-    buttonPane.add(button); 
-    button.addActionListener(this);
-    getContentPane().add(buttonPane, BorderLayout.SOUTH);
+    getContentPane().add(messagePane, BorderLayout.CENTER);
+    //JPanel buttonPane = new JPanel();
+    //JButton button = new JButton("OK"); 
+   // buttonPane.add(button); 
+    //button.addActionListener(this);
+    //getContentPane().add(buttonPane, BorderLayout.SOUTH);
     setDefaultCloseOperation(DISPOSE_ON_CLOSE);
     pack(); 
     setModal(true);

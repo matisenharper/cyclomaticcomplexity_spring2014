@@ -21,8 +21,8 @@ public @interface CyclomaticComplexity {
 	Student author = Student.ROCHA;
 	GraphView gp = GraphView.setData(file, author);
 	ModalDialog dlg = new ModalDialog(gp);
-	//frame.getContentPane().add(gp, BorderLayout.CENTER); 
-	//frame.setLocation(0,0);
-	//frame.setSize(800, 600); 
-	//frame.setVisible(true);
+	//frame.getContentPane().add(gp, BorderLayout.CENTER); added to jdialog
+	//frame.setLocation(0,0); added to jdialog
+	//frame.setSize(800, 600); added to jdialog
+	//frame.setVisible(true); added to jdialog
 }
