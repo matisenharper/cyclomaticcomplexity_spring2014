@@ -2,45 +2,32 @@ package inputOutput;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Frame;
-import java.awt.Graphics;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.GridLayout;
-import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.lang.reflect.Method;
 import java.net.URL;
 
 import javax.swing.ButtonGroup;
-import javax.swing.ImageIcon;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
-import cyclomaticComplexity.CyclomaticComplexityMethodCalc;
-import cyclomaticComplexity.GraphImage;
 import MISC.Student;
-import engine.MethodCode;
+import cyclomaticComplexity.GraphImage;
 import engine.MethodData;
-import engine.MethodDataImpl;
 import engine.MethodUtils;
 import engine.MethodUtilsImpl;
 
 
 public class GraphView extends JPanel
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	//this just for testing
 	static MethodData[] methodArray = {null};
 	static int selected;
@@ -59,24 +46,8 @@ public class GraphView extends JPanel
 		this.setLayout(new BorderLayout());
 	}
 
-	private static class ImageShow extends JPanel
-	{
-		private ImageIcon image;
-		private JLabel label;
-		//constructor
-		ImageShow(JPanel graph)
-		{
-			setLayout(new BorderLayout());
-			image = new ImageIcon(getClass().getResource("demo.jpg"));
-			label = new JLabel(image);
-			add(label);
-		}
-	}
-
 	private static int getcal (int i)
-	{
-		JPanel buttons= new JPanel();
-		
+	{		
 		return i;
 	}
 	
@@ -87,11 +58,11 @@ public class GraphView extends JPanel
 		MethodData[] methodSignature =m.getMethods( program, S);
 		return methodSignature;
 	}
-	private MethodData toGetCodeBody (Student author,MethodCode method)
+	/*private MethodData toGetCodeBody (Student author,MethodCode method)
 	{
 		MethodData body = new MethodDataImpl(author, method);
 		return body;
-	}
+	}*/
 	private static void changeImage ()
 	{
 		File imgfile = GraphImage.getImage(methodArray[selected]);
@@ -138,26 +109,6 @@ public class GraphView extends JPanel
 		return calPanel;
 	}
 
-	private static void MethodHeaderLooker(File file, JPanel graph) throws IOException
-	{
-
-		try 
-		{
-			FileInputStream input = new FileInputStream(file);
-			assert input != null : "input is null! : Check that the resources folder is on the classpath, the file name is correct, and the file is in the resources folder";
-			BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(input));
-			String str;
-			do
-			{
-				str = bufferedReader.readLine();
-				if(str != null) System.out.println(str);
-			}
-			while(str != null);
-		}
-
-		catch(FileNotFoundException e) { 
-		}
-	}
 
 	public static void main(String args []) 
 	{
@@ -168,21 +119,12 @@ public class GraphView extends JPanel
 				ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 				URL url = classLoader.getResource("inputOutput/Tic.txt");
 				assert url != null : "url is null!";
-				File file = new File(url.getPath());				
+				//File file = new File(url.getPath());				
 			}
 		});
 
 	}
 
-
-	private static void showImage(JPanel graph)
-	{
-		ImageShow gui = new ImageShow(graph);
-		graph.add(gui);
-
-	}
-
-	
 	public static GraphView setData (File file, Student studentName)
 	{
 		methodArray =gettingSignature(file, studentName);
@@ -232,7 +174,6 @@ public class GraphView extends JPanel
 		while (count < methodMan.length)
 		{
 			String tempmethod = methodMan[count].getName().toString();
-			int complexity=CyclomaticComplexityMethodCalc.getCyclomaticComplexity(methodMan[count]);
 			
 			createButton(tempmethod, buttons, group, count);
 			count ++;
