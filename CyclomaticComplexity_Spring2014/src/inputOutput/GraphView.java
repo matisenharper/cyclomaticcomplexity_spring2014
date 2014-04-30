@@ -2,6 +2,7 @@ package inputOutput;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.GridLayout;
@@ -13,9 +14,11 @@ import java.net.URL;
 import javax.swing.ButtonGroup;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 import MISC.Student;
+import cyclomaticComplexity.CyclomaticComplexityMethodCalc;
 import cyclomaticComplexity.GraphImage;
 import engine.MethodData;
 import engine.MethodUtils;
@@ -143,6 +146,15 @@ public class GraphView extends JPanel
 		JPanel calPanel = new JPanel();
 		JPanel ForColor = new JPanel();
 		complexityNumber = new JTextField();
+		JTextArea label = new JTextArea();
+		
+		Font font2 = new Font("Arial", Font.BOLD, 22);
+		complexityNumber.setFont(font2);
+				
+		Font font = new Font("Arial", Font.BOLD, 48);
+        label.setFont(font);
+        
+    	label.setText("Cyclomatic Complexity Tool");
 		
 		calPanel.add(complexityNumber);
 		
@@ -153,6 +165,7 @@ public class GraphView extends JPanel
 		scroller.setVisible(true);
 		imagePanel.setLayout(new BorderLayout());
 		
+		graph.add(label ,BorderLayout.NORTH);
 		graph.add(buttons,BorderLayout.WEST);
 		graph.add(imagePanel,BorderLayout.EAST);
 		graph.add(calPanel,BorderLayout.SOUTH);
@@ -161,6 +174,7 @@ public class GraphView extends JPanel
 		
 		graph.setBackground(Color.decode("#2014FF"));
 		
+		label.setBackground(Color.decode("#16E5C4"));
 		ForColor.setBackground(Color.decode("#16E5C4"));
 		imagePanel.setBackground( Color.decode("#000000"));
 		calPanel.setBackground(Color.decode("#16E5C4"));
