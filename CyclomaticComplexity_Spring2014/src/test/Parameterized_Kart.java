@@ -157,7 +157,7 @@ public class Parameterized_Kart extends Suite {
 	
 	private void afterAllTests()
 	{
-		ModalDialog dlg = new ModalDialog(new GraphView(), "title", "cyclomatic complexity statistic all students");
+		//ModalDialog dlg = new ModalDialog(new GraphView(), "title", "cyclomatic complexity statistic all students");
 		System.out.println("AFTER ALL TESTS FOR ALL STUDENTS");
 		//throw new RuntimeException("afterAllTests()");
 	}

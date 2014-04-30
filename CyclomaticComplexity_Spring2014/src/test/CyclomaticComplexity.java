@@ -20,7 +20,7 @@ public @interface CyclomaticComplexity {
 	File file = new File("./src/tictactoe/TicTacToeBoardImpl_Rocha.java");
 	Student author = Student.ROCHA;
 	GraphView gp = GraphView.setData(file, author);
-	ModalDialog dlg = new ModalDialog(gp, "Student", "message");
+	ModalDialog dlg = new ModalDialog(gp);
 	//frame.getContentPane().add(gp, BorderLayout.CENTER); 
 	//frame.setLocation(0,0);
 	//frame.setSize(800, 600); 

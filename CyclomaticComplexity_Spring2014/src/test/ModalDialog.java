@@ -18,7 +18,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 public class ModalDialog extends JDialog implements ActionListener {
-  public ModalDialog(GraphView parent, String title, String message) {
+  public ModalDialog(JPanel parent) {
     super();
     if (parent != null) {
       Dimension parentSize = parent.getSize(); 
@@ -26,7 +26,7 @@ public class ModalDialog extends JDialog implements ActionListener {
       setLocation(p.x + parentSize.width / 4, p.y + parentSize.height / 4);
     }
     JPanel messagePane = new JPanel();
-    messagePane.add(new JLabel(message));
+    messagePane.add(parent);
     getContentPane().add(messagePane);
     JPanel buttonPane = new JPanel();
     JButton button = new JButton("OK"); 
@@ -42,12 +42,12 @@ public class ModalDialog extends JDialog implements ActionListener {
     setVisible(false); 
     dispose(); 
   }
-  public static void main(String[] a) {
-    ModalDialog dlg = new ModalDialog(new GraphView(), "title", "message");
+  //public static void main(String[] a) {
+  //  ModalDialog dlg = new ModalDialog(new GraphView(), "title", "message");
     
     
     
     /*ImageIcon img = new ImageIcon(OuterClass.class.getResource("Logo_Horizontal_blueGold"));
     dlg .setIconImage(img.getImage());*/
-  }
+  //}
 }
