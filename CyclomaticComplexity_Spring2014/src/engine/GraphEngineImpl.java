@@ -1,3 +1,23 @@
+/*
+ * Created by Esteban Daines
+ * 
+ * This implementation utilizes Javaparser-1.0.8
+ * 
+ * Statements Implemented:
+ * - if(){}
+ * - if(){}else{}
+ * - if() ;
+ * - for(){}
+ * - for() ;
+ * - while(){}
+ * - while() ;
+ * - switch(){}
+ * - break;
+ * - return;
+ * - Method calls
+ * - Variable declarations
+ * - Variable Assignation
+ */
 package engine;
 
 import japa.parser.ast.BlockComment;

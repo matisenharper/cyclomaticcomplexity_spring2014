@@ -25,6 +25,7 @@ public class ImagePanel extends JPanel{
        } catch (IOException ex) {
             // handle exception...
        }
+       this.setSize(image.getWidth(), image.getHeight());
     }
 
     @Override

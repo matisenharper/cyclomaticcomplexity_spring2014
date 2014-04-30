@@ -2,6 +2,8 @@ package inputOutput;
 
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
 
 import javax.swing.JScrollPane;
 
@@ -13,10 +15,20 @@ public class ImageScroller extends JScrollPane {
 
 	public ImageScroller(Component c){
 		super(c);
+		this.setSize(c.getWidth(), c.getHeight());
 	}
 	
 	@Override
     public Dimension getPreferredSize() {
-        return new Dimension(580, 0);
+		GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
+		int width = gd.getDisplayMode().getWidth();
+		int height = gd.getDisplayMode().getHeight();
+		
+		width = (width*6)/10;
+		if(width < this.getWidth()){
+			return new Dimension(width, 0);
+		}else{
+			return this.getSize();
+		}
     }
 }
