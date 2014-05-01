@@ -42,7 +42,7 @@ public class GraphImage
     	gv.addln(gv.end_graph());
     	
     	String type = "png";
-		File out = new File("out." + type);   // out.gif in this example
+		File out = new File(body.getName()+"_"+body.getAuthor().getLastName()+"." + type);   // out.gif in this example
 		gv.writeGraphToFile( gv.getGraph( gv.getDotSource(), type ), out );
 		
 		img=out;

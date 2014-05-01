@@ -26,7 +26,7 @@ public class ImageScroller extends JScrollPane {
 		int width = gd.getDisplayMode().getWidth();
 		int height = gd.getDisplayMode().getHeight();
 		
-		width = (width*9)/10;
-		return new Dimension(width, 0);
+		width = (width*6)/10;
+		return new Dimension(width, height);
     }
 }

@@ -44,7 +44,7 @@ public class GraphView extends JPanel
 		GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
 		int width = gd.getDisplayMode().getWidth();
 		int height = gd.getDisplayMode().getHeight();
-		setSize(width*3/2, height*3/2);
+		setSize(width, height);
 		selected = -1;
 		this.setLayout(new BorderLayout());
 	}
