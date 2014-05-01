@@ -1,58 +1,60 @@
 package cyclomaticComplexity;
+import java.io.*;  
+import java.util.*;  
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.*;
-
-public class CyclomaticComplexityAnalysis {
-
-	public CyclomaticComplexityAnalysis () throws IOException{
-		int count=1;
-		String line="";
-		ArrayList<String> linesOfCode =new ArrayList<String>();
-		File file=new File("./src/tictactoe/TicTacToeImpl_Rocha.java");
-		BufferedReader br = null;
-		try {
-			br = new BufferedReader(new FileReader(file));
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		try {
-			while ((line = br.readLine()) != null) 
-			{
-				linesOfCode.add(line);
-			}
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		List<String> tokens = new ArrayList<String>();
-		tokens.add("if(");
-		tokens.add("for(");
-		tokens.add("while(");
-		tokens.add("break;");
-		br.close();
-		for(String line2: linesOfCode){
-			for(String token: tokens){
-				String patternString=token;
-				Pattern pattern = Pattern.compile(patternString);
-				Matcher matcher = pattern.matcher(line2);
-
-				count = 1;
-				while(matcher.find()) {
-					count++;
-				}
-			}
-		}
-	System.out.println(count);
-	}
-}
+  
+class CyclomaticComplexityAnalysis {  
+  
+    public int check() {  
+        int complexity = 1;  
+        String fileName;  
+        String[] keywords = {"if", "else", "while", "case", "for", "switch", "do", "continue", "break", "&&",  
+            "||", "?", ":", "catch", "finally", "throw", "throws", "default", "return", "foreach", "elseif", "or", "and", "xor"};  
+        String words = "";  
+        String line = null;  
+        try {  
+            fileName = "./src/tictactoe/TicTacToeBoardImpl_Rocha.java";  
+            FileReader fr = new FileReader(fileName);  
+            BufferedReader br = new BufferedReader(fr);  
+            line = br.readLine();  
+            while (line != null) {  
+                StringTokenizer stTokenizer = new StringTokenizer(line);  
+                while (stTokenizer.hasMoreTokens()) {  
+                    words = stTokenizer.nextToken();  
+                    for (int i = 0; i < keywords.length; i++) {  
+                        if (keywords[i].equals("\\")) {  
+                            break;  
+                        } else {  
+                            if (keywords[i].equals(words)) {  
+                                complexity++;  
+                            }  
+                        }  
+                    }  
+                }  
+                line = br.readLine();  
+            }  
+        } catch (IOException e) {  
+            e.printStackTrace();  
+        }  
+        return (complexity);  
+    }  
+  
+    public void showCyclomaticComplexity(int ccValue) {  
+        System.out.println("\nThe Cyclomatic Complexity is : " + ccValue);  
+        System.out.print("\nResult : ");  
+        if (ccValue > 50) {  
+            System.out.print("Most complex and highly unstable method ");  
+        } else if (ccValue >= 21 && ccValue <= 50) {  
+            System.out.print("High risk");  
+        } else if (ccValue >= 11 && ccValue <= 20) {  
+            System.out.print("Moderate risk");  
+        } else {  
+            System.out.print("Low risk program");  
+        }  
+    }  
+  
+    public static void main(String ss[]) {  
+        CyclomaticComplexityAnalysis cc = new CyclomaticComplexityAnalysis();  
+        cc.showCyclomaticComplexity(cc.check());  
+    }  
+}  
