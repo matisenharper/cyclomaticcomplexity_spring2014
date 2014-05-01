@@ -37,7 +37,7 @@ public class GraphImage
 			gv.addln(ali.get(i)[0]+" -> "+ali.get(i)[1]+";");
 		}
 		for (int i = 0; i < as.size();i++){
-			gv.addln(""+i+" [label=\""+as.get(i)+"\",shape=box,fillcolor=\"#FFFFFF\",style=\"filled,rounded\"]");
+			gv.addln(""+i+" [label=\""+as.get(i)+"\",fontsize=38,shape=oval,fillcolor=\"#FFFFFF\",style=\"filled,rounded\"]");
 		}
     	gv.addln(gv.end_graph());
     	

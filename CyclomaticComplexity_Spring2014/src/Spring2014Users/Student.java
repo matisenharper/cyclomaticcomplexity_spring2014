@@ -10,7 +10,7 @@ public enum Student implements MISC.Student {
 	HARPER("Matisen", "Harper"),
 	HOFFPAUIR("Alex", "Hoffpauir"),
 	KART("DR.", "Kart"),
-	ROCHA("Eddie", "Rocha");
+	ROCHA("Freddie", "Rocha");
 	
 	
 
@@ -43,7 +43,7 @@ public enum Student implements MISC.Student {
 		studentToDisplayNameMap.put(HARPER,"Matisen Harper");
 		studentToDisplayNameMap.put(HOFFPAUIR, "Alex Hoffpauir");
 		studentToDisplayNameMap.put(KART, "DR. Kart");
-		studentToDisplayNameMap.put(ROCHA, "Eddie Rocha");
+		studentToDisplayNameMap.put(ROCHA, "Freddie Rocha");
 		
 		
 	}

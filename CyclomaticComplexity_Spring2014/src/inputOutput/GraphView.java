@@ -44,7 +44,7 @@ public class GraphView extends JPanel
 		GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
 		int width = gd.getDisplayMode().getWidth();
 		int height = gd.getDisplayMode().getHeight();
-		setSize(width, height);
+		setSize(width*3/2, height*3/2);
 		selected = -1;
 		this.setLayout(new BorderLayout());
 	}
@@ -92,6 +92,8 @@ public class GraphView extends JPanel
 		buttons.add(button);
 		group.add(button);
 		
+		Font font3 = new Font("Arial", Font.PLAIN, 38);
+		button.setFont(font3);
 
 		RadioListener listens=new RadioListener();
 		button.addActionListener(listens);		
@@ -148,10 +150,10 @@ public class GraphView extends JPanel
 		complexityNumber = new JTextField();
 		JTextArea label = new JTextArea();
 		
-		Font font2 = new Font("Arial", Font.BOLD, 22);
+		Font font2 = new Font("Arial", Font.BOLD, 34);
 		complexityNumber.setFont(font2);
 				
-		Font font = new Font("Arial", Font.BOLD, 48);
+		Font font = new Font("Arial", Font.BOLD, 60);
         label.setFont(font);
         
     	label.setText("Cyclomatic Complexity Tool");
@@ -190,6 +192,9 @@ public class GraphView extends JPanel
 			String tempmethod = methodMan[count].getName().toString();
 			
 			createButton(tempmethod, buttons, group, count);
+			
+			
+			
 			count ++;
 		}
 		return graph;

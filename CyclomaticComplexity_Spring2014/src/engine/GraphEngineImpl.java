@@ -220,7 +220,7 @@ public class GraphEngineImpl implements GraphEngine{
 		
 		@Override
 		public void visit(AssignExpr n, Object arg) {
-			graph.addNode("Assign Expresion");
+			graph.addNode("Variable\nAssignment");
 			if(lastnode > -1 && !this.getAlternateLastnodes().contains(lastnode)){
         		graph.addEdge(lastnode, graph.getNodeCount()-1);
         	}
@@ -493,7 +493,7 @@ public class GraphEngineImpl implements GraphEngine{
 		
 		@Override
 		public void visit(VariableDeclarationExpr n, Object arg) {
-			graph.addNode("Variable Declaration");
+			graph.addNode("Variable\nDeclaration");
 			if(lastnode > -1 && !this.getAlternateLastnodes().contains(lastnode)){
         		graph.addEdge(lastnode, graph.getNodeCount()-1);
         	}

@@ -1,4 +1,4 @@
-/*package test;
+package test;
 
 import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
@@ -10,16 +10,18 @@ import java.lang.annotation.Target;
 import org.junit.Before;
 import org.junit.Test;
 
-import javaBowlingTest.Mark;
-import javaBowlingTest.SinglePlayerBowlingScoreboard;
-import javaBowlingTest.SinglePlayerBowlingScoreboardImpl_Skeleton;
+import bowling.SinglePlayerBowlingScoreboardImpl_Hajar;
+
+import bowling.Mark;
+import bowling.SinglePlayerBowlingScoreboard;
+import bowling.SinglePlayerBowlingScoreboardImpl_Hajar;
 
 /**
  * @author kart
  *
  */
-/*public class test1 {
-	private static SinglePlayerBowlingScoreboardImpl_Skeleton singlePlayerBowlingScoreboard_STUDENT;
+public class test1 {
+	private static SinglePlayerBowlingScoreboardImpl_Hajar singlePlayerBowlingScoreboard_STUDENT;
 	private static final String PLAYER_NAME = "Big Lebowski";
 
 	@Retention(value=RUNTIME)
@@ -31,7 +33,7 @@ import javaBowlingTest.SinglePlayerBowlingScoreboardImpl_Skeleton;
 	@Before
 	public void initBeforeEachTestMethod()
 	{
-		singlePlayerBowlingScoreboard_STUDENT = new SinglePlayerBowlingScoreboardImpl_Skeleton(PLAYER_NAME);
+		singlePlayerBowlingScoreboard_STUDENT = new SinglePlayerBowlingScoreboardImpl_Hajar(PLAYER_NAME);
 	}
 
 	@Points(value=0)
@@ -469,4 +471,4 @@ import javaBowlingTest.SinglePlayerBowlingScoreboardImpl_Skeleton;
 		}
 		return sum;
 	}
-}*/
+}
